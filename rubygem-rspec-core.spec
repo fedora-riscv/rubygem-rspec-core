@@ -26,6 +26,7 @@ Source0:	http://rubygems.org/gems/%{gemname}-%{version}.gem
 BuildRequires:	ruby(abi) = %{rubyabi}
 BuildRequires:	rubygems
 %if 0%{?need_bootstrap} < 1
+BuildRequires:	rubygem(ZenTest)
 BuildRequires:	rubygem(rspec-expectations)
 BuildRequires:	rubygem(rspec-mocks)
 %endif
