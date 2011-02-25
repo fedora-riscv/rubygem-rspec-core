@@ -8,7 +8,7 @@
 # runtime part of rspec-mocks does not depend on rspec-core
 %global	need_bootstrap_set	1
 %if 0%{?fedora} >= 16
-%global	need_bootstrap_set	1
+%global	need_bootstrap_set	0
 %endif
 
 %{!?need_bootstrap:	%global	need_bootstrap	%{need_bootstrap_set}}
@@ -16,7 +16,7 @@
 Summary:	Rspec-2 runner and formatters
 Name:		rubygem-%{gemname}
 Version:	2.5.1
-Release:	3%{?dist}
+Release:	4%{?dist}
 
 Group:		Development/Languages
 License:	MIT
@@ -139,6 +139,9 @@ ruby -rubygems -Ilib/ -S bin/rspec \
 %{geminstdir}/spec/
 
 %changelog
+* Sat Feb 26 2011 Mamoru Tasaka <mtasaka@fedoraproject.org>
+- And enable check on rawhide
+
 * Sat Feb 26 2011 Mamoru Tasaka <mtasaka@fedoraproject.org> - 2.5.1-3
 - More cleanups
 
