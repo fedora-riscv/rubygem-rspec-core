@@ -1,6 +1,13 @@
 %global	gemdir		%(ruby -rubygems -e 'puts Gem::dir' 2>/dev/null)
+%global	majorver	2.6.0
+%global	preminorver	.rc4
+%global	rpmminorver	.%(echo %preminorver | sed -e 's|^\\.\\.*||')
+%global	fullver	%{majorver}%{?preminorver}
+
+%global	fedorarel	1
+
 %global	gemname	rspec-core
-%global	geminstdir	%{gemdir}/gems/%{gemname}-%{version}
+%global	geminstdir	%{gemdir}/gems/%{gemname}-%{fullver}
 
 %global	rubyabi	1.8
 
@@ -15,13 +22,13 @@
 
 Summary:	Rspec-2 runner and formatters
 Name:		rubygem-%{gemname}
-Version:	2.5.1
-Release:	4%{?dist}
+Version:	%{majorver}
+Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}
 
 Group:		Development/Languages
 License:	MIT
 URL:		http://github.com/rspec/rspec-mocks
-Source0:	http://rubygems.org/gems/%{gemname}-%{version}.gem
+Source0:	http://rubygems.org/gems/%{gemname}-%{fullver}.gem
 
 BuildRequires:	ruby(abi) = %{rubyabi}
 BuildRequires:	rubygems
@@ -71,7 +78,7 @@ gem install \
 	--rdoc \
 	%{SOURCE0}
 
-chmod 0644 .%{gemdir}/cache/%{gemname}-%{version}.gem
+chmod 0644 .%{gemdir}/cache/%{gemname}-%{fullver}.gem
 
 # rpmlint
 pushd .%{geminstdir}
@@ -98,7 +105,7 @@ cp -a .%{_prefix}/* %{buildroot}%{_prefix}/
 mv %{buildroot}%{_bindir}/autospec{,2}
 
 # cleanups
-rm -f %{buildroot}%{geminstdir}/{.document,.gitignore,.treasure_map.rb,.rspec}
+rm -f %{buildroot}%{geminstdir}/{.document,.gitignore,.treasure_map.rb,.rspec,.travis.yml,spec.txt}
 
 %if 0%{?need_bootstrap} < 1
 %check
@@ -124,13 +131,13 @@ ruby -rubygems -Ilib/ -S bin/rspec \
 %{geminstdir}/bin/
 %{geminstdir}/lib/
 
-%{gemdir}/cache/%{gemname}-%{version}.gem
-%{gemdir}/specifications/%{gemname}-%{version}.gemspec
+%{gemdir}/cache/%{gemname}-%{fullver}.gem
+%{gemdir}/specifications/%{gemname}-%{fullver}.gemspec
 
 
 %files	doc
 %defattr(-,root,root,-)
-%{gemdir}/doc/%{gemname}-%{version}
+%{gemdir}/doc/%{gemname}-%{fullver}
 %{geminstdir}/Gemfile
 %{geminstdir}/Guardfile
 %{geminstdir}/Rakefile
@@ -141,6 +148,9 @@ ruby -rubygems -Ilib/ -S bin/rspec \
 %{geminstdir}/spec/
 
 %changelog
+* Tue May  3 2011 Mamoru Tasaka <mtasaka@fedoraproject.org> - 2.6.0-0.1.rc4
+- 2.6.0 rc4
+
 * Sat Feb 26 2011 Mamoru Tasaka <mtasaka@fedoraproject.org>
 - And enable check on rawhide
 
