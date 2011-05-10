@@ -1,10 +1,10 @@
 %global	gemdir		%(ruby -rubygems -e 'puts Gem::dir' 2>/dev/null)
 %global	majorver	2.6.0
-%global	preminorver	.rc4
+%global	preminorver	.rc6
 %global	rpmminorver	.%(echo %preminorver | sed -e 's|^\\.\\.*||')
 %global	fullver	%{majorver}%{?preminorver}
 
-%global	fedorarel	1
+%global	fedorarel	2
 
 %global	gemname	rspec-core
 %global	geminstdir	%{gemdir}/gems/%{gemname}-%{fullver}
@@ -14,7 +14,7 @@
 # %%check section needs rspec-core, however rspec-core depends on rspec-mocks
 # runtime part of rspec-mocks does not depend on rspec-core
 %global	need_bootstrap_set	1
-%if 0%{?fedora} >= 16
+%if 0%{?fedora} >= 15
 %global	need_bootstrap_set	0
 %endif
 
@@ -148,6 +148,9 @@ ruby -rubygems -Ilib/ -S bin/rspec \
 %{geminstdir}/spec/
 
 %changelog
+* Tue May 10 2011 Mamoru Tasaka <mtasaka@fedoraproject.org> - 2.6.0-0.2.rc6
+- 2.6.0 rc6
+
 * Tue May  3 2011 Mamoru Tasaka <mtasaka@fedoraproject.org> - 2.6.0-0.1.rc4
 - 2.6.0 rc4
 
