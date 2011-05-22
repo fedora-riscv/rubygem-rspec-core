@@ -1,5 +1,5 @@
 %global	gemdir		%(ruby -rubygems -e 'puts Gem::dir' 2>/dev/null)
-%global	majorver	2.6.0
+%global	majorver	2.6.2
 #%%global	preminorver	.rc6
 %global	rpmminorver	.%(echo %preminorver | sed -e 's|^\\.\\.*||')
 %global	fullver	%{majorver}%{?preminorver}
@@ -148,6 +148,9 @@ ruby -rubygems -Ilib/ -S bin/rspec \
 %{geminstdir}/spec/
 
 %changelog
+* Mon May 23 2011 Mamoru Tasaka <mtasaka@fedoraproject.org> - 2.6.2-1
+- 2.6.2
+
 * Mon May 16 2011 Mamoru Tasaka <mtasaka@fedoraproject.org> - 2.6.0-1
 - 2.6.0
 
