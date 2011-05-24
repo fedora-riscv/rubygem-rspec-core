@@ -1,10 +1,10 @@
 %global	gemdir		%(ruby -rubygems -e 'puts Gem::dir' 2>/dev/null)
-%global	majorver	2.6.2
+%global	majorver	2.6.3
 #%%global	preminorver	.rc6
 %global	rpmminorver	.%(echo %preminorver | sed -e 's|^\\.\\.*||')
 %global	fullver	%{majorver}%{?preminorver}
 
-%global	fedorarel	2
+%global	fedorarel	1
 
 %global	gemname	rspec-core
 %global	geminstdir	%{gemdir}/gems/%{gemname}-%{fullver}
@@ -94,12 +94,6 @@ EOF
 
 popd
 
-# Workaround for issue of invalid date format on gemspec file
-# (bug 706914)
-pushd .%{gemdir}/specifications
-sed -i -e '\@s\.date@s|{\(....-..-..\) [^ ][^ ]*}|{\1}|' *.gemspec
-popd
-
 %build
 
 %install
@@ -154,6 +148,9 @@ ruby -rubygems -Ilib/ -S bin/rspec \
 %{geminstdir}/spec/
 
 %changelog
+* Wed May 25 2011 Mamoru Tasaka <mtasaka@fedoraproject.org> - 2.6.3-1
+- 2.6.3
+
 * Tue May 24 2011 Mamoru Tasaka <mtasaka@fedoraproject.org> - 2.6.2-2
 - Workaround for invalid date format in gemspec file (bug 706914)
 
