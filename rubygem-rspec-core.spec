@@ -34,7 +34,7 @@ Source0:	http://rubygems.org/gems/%{gemname}-%{fullver}.gem
 Patch0:		rubygem-rspec-core-2.8.0-skip-some-tests.patch
 
 BuildRequires:	ruby(abi) = %{rubyabi}
-BuildRequires:	rubygems
+BuildRequires:	rubygems-devel
 %if 0%{?need_bootstrap} < 1
 BuildRequires:	rubygem(ZenTest)
 BuildRequires:	rubygem(rake)
