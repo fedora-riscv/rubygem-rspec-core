@@ -1,5 +1,5 @@
-%global	gemdir		%{gem_dir}
-%global	majorver	2.11.1
+%global	gemdir		%(ruby -rubygems -e 'puts Gem::dir' 2>/dev/null)
+%global	majorver	2.6.4
 #%%global	preminorver	.rc6
 %global	rpmminorver	.%(echo %preminorver | sed -e 's|^\\.\\.*||')
 %global	fullver	%{majorver}%{?preminorver}
@@ -7,14 +7,16 @@
 %global	fedorarel	1
 
 %global	gemname	rspec-core
-%global	gem_name %{gemname}
-%global	geminstdir	%{gem_instdir}
+%global	geminstdir	%{gemdir}/gems/%{gemname}-%{fullver}
 
-%global	rubyabi	1.9.1
+%global	rubyabi	1.8
 
 # %%check section needs rspec-core, however rspec-core depends on rspec-mocks
 # runtime part of rspec-mocks does not depend on rspec-core
+%global	need_bootstrap_set	1
+%if 0%{?fedora} >= 15
 %global	need_bootstrap_set	0
+%endif
 
 %{!?need_bootstrap:	%global	need_bootstrap	%{need_bootstrap_set}}
 
@@ -27,11 +29,9 @@ Group:		Development/Languages
 License:	MIT
 URL:		http://github.com/rspec/rspec-mocks
 Source0:	http://rubygems.org/gems/%{gemname}-%{fullver}.gem
-# Skip some tests
-Patch0:		rubygem-rspec-core-2.11.1-skip-some-tests.patch
 
 BuildRequires:	ruby(abi) = %{rubyabi}
-BuildRequires:	rubygems-devel
+BuildRequires:	rubygems
 %if 0%{?need_bootstrap} < 1
 BuildRequires:	rubygem(ZenTest)
 BuildRequires:	rubygem(rake)
@@ -39,10 +39,8 @@ BuildRequires:	rubygem(rspec-expectations)
 BuildRequires:	rubygem(rspec-mocks)
 %endif
 Requires:	ruby(abi) = %{rubyabi}
-# When killing the below dependency, a notification to mailing list
-# is needed
-#Requires:	rubygem(rspec-expectations)
-#Requires:	rubygem(rspec-mocks)
+Requires:	rubygem(rspec-expectations)
+Requires:	rubygem(rspec-mocks)
 # Make the following installed by default
 # lib/rspec/core/rake_task
 Requires:	rubygem(rake)
@@ -88,16 +86,11 @@ grep -rl '^#![ \t]*/usr/bin' ./lib| \
 	xargs sed -i -e '\@^#![ \t]*/usr/bin@d'
 
 # Until rspec is updated, lets install rspec.rb
-# Kill below
-%if 0
 cat > lib/rspec.rb <<EOF
 require 'rspec/core'
 require 'rspec/expectations'
 require 'rspec/mocks'
 EOF
-%endif
-
-%patch0 -p1
 
 popd
 
@@ -112,19 +105,18 @@ cp -a .%{_prefix}/* %{buildroot}%{_prefix}/
 mv %{buildroot}%{_bindir}/autospec{,2}
 
 # cleanups
-rm -f %{buildroot}%{geminstdir}/{.document,.gitignore,.treasure_map.rb,.rspec,.travis.yml,spec.txt,.yardopts}
+rm -f %{buildroot}%{geminstdir}/{.document,.gitignore,.treasure_map.rb,.rspec,.travis.yml,spec.txt}
 
 %if 0%{?need_bootstrap} < 1
 %check
 pushd .%{geminstdir}
 # spec/autotest/failed_results_re_spec.rb (and others) fail, skipping this for now
 # (need investigating)
-# and now also some other tests fail
-ruby -rubygems -Ilib/ -S exe/rspec \
-	$(ls -1 spec/rspec/*_spec.rb spec/rspec/*/*_spec.rb | \
-		grep -v configuration_options_spec | \
-		grep -v drb_options_spec ) \
-	|| :
+ruby -rubygems -Ilib/ -S bin/rspec \
+	spec/rspec/*_spec.rb spec/rspec/*/*_spec.rb \
+%if 0
+	spec/autotest/*_spec.rb
+%endif
 %endif
 
 %files
@@ -136,7 +128,7 @@ ruby -rubygems -Ilib/ -S exe/rspec \
 
 %{_bindir}/autospec2
 %{_bindir}/rspec
-%{geminstdir}/exe/
+%{geminstdir}/bin/
 %{geminstdir}/lib/
 
 %{gemdir}/cache/%{gemname}-%{fullver}.gem
@@ -146,23 +138,16 @@ ruby -rubygems -Ilib/ -S exe/rspec \
 %files	doc
 %defattr(-,root,root,-)
 %{gemdir}/doc/%{gemname}-%{fullver}
+%{geminstdir}/Gemfile
+%{geminstdir}/Guardfile
+%{geminstdir}/Rakefile
+%{geminstdir}/cucumber.yml
+%{geminstdir}/%{gemname}.gemspec
 %{geminstdir}/features/
+%{geminstdir}/script/
 %{geminstdir}/spec/
 
 %changelog
-* Thu Oct 11 2012 Mamoru Tasaka <mtasaka@fedoraproject.org> - 2.11.1-1
-- 2.11.1
-- Drop dependency for mocks and expectations
-
-* Sat Jul 21 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.8.0-1.1
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
-
-* Sun Jan 21 2012 Mamoru Tasaka <mtasaka@fedoraproject.org> - 2.8.0-1
-- 2.8.0
-
-* Sat Jan 14 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.6.4-1.1
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
-
 * Tue Jun  7 2011 Mamoru Tasaka <mtasaka@fedoraproject.org> - 2.6.4-1
 - 2.6.4
 
