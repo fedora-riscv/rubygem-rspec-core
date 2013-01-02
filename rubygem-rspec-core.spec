@@ -3,7 +3,7 @@
 %global	rpmminorver	.%(echo %preminorver | sed -e 's|^\\.\\.*||')
 %global	fullver	%{majorver}%{?preminorver}
 
-%global	fedorarel	1
+%global	fedorarel	2
 
 %global	gem_name	rspec-core
 
@@ -24,8 +24,6 @@ Group:		Development/Languages
 License:	MIT
 URL:		http://github.com/rspec/rspec-mocks
 Source0:	http://rubygems.org/gems/%{gem_name}-%{fullver}.gem
-# Make spec test executable without Aruba
-Patch0:		rubygem-rspec-core-2.12.2-spec-test-without-aruba.patch
 
 BuildRequires:	ruby(abi) = %{rubyabi}
 BuildRequires:	rubygems-devel
@@ -34,6 +32,7 @@ BuildRequires:	rubygem(ZenTest)
 BuildRequires:	rubygem(rake)
 BuildRequires:	rubygem(rspec-expectations)
 BuildRequires:	rubygem(rspec-mocks)
+BuildRequires:	rubygem(aruba)
 %endif
 Requires:	ruby(abi) = %{rubyabi}
 # When killing the below dependency, a notification to mailing list
@@ -77,18 +76,6 @@ cd %{gem_name}-%{version}
 # rpmlint
 grep -rl '^#![ \t]*/usr/bin' ./lib| \
 	xargs sed -i -e '\@^#![ \t]*/usr/bin@d'
-
-# Until rspec is updated, lets install rspec.rb
-# Kill below
-%if 0
-cat > lib/rspec.rb <<EOF
-require 'rspec/core'
-require 'rspec/expectations'
-require 'rspec/mocks'
-EOF
-%endif
-
-%patch0 -p1
 
 gem specification -l --ruby %{SOURCE0} > %{gem_name}.gemspec
 gem build %{gem_name}.gemspec
@@ -150,6 +137,10 @@ ruby -rubygems -Ilib/ -S exe/rspec || :
 %exclude	%{gem_instdir}/spec/
 
 %changelog
+* Wed Jan  2 2013 Mamoru TASAKA <mtasaka@fedoraproject.org> - 2.12.2-2
+- Use aruba, which is already in Fedora, drop no-longer-needed
+  patch
+
 * Wed Jan  2 2013 Mamoru TASAKA <mtasaka@fedoraproject.org> - 2.12.2-1
 - 2.12.2
 
