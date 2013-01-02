@@ -1,14 +1,11 @@
-%global	gemdir		%{gem_dir}
-%global	majorver	2.11.1
+%global	majorver	2.12.2
 #%%global	preminorver	.rc6
 %global	rpmminorver	.%(echo %preminorver | sed -e 's|^\\.\\.*||')
 %global	fullver	%{majorver}%{?preminorver}
 
 %global	fedorarel	1
 
-%global	gemname	rspec-core
-%global	gem_name %{gemname}
-%global	geminstdir	%{gem_instdir}
+%global	gem_name	rspec-core
 
 %global	rubyabi	1.9.1
 
@@ -19,16 +16,16 @@
 %{!?need_bootstrap:	%global	need_bootstrap	%{need_bootstrap_set}}
 
 Summary:	Rspec-2 runner and formatters
-Name:		rubygem-%{gemname}
+Name:		rubygem-%{gem_name}
 Version:	%{majorver}
 Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}
 
 Group:		Development/Languages
 License:	MIT
 URL:		http://github.com/rspec/rspec-mocks
-Source0:	http://rubygems.org/gems/%{gemname}-%{fullver}.gem
-# Skip some tests
-Patch0:		rubygem-rspec-core-2.11.1-skip-some-tests.patch
+Source0:	http://rubygems.org/gems/%{gem_name}-%{fullver}.gem
+# Make spec test executable without Aruba
+Patch0:		rubygem-rspec-core-2.12.2-spec-test-without-aruba.patch
 
 BuildRequires:	ruby(abi) = %{rubyabi}
 BuildRequires:	rubygems-devel
@@ -52,7 +49,7 @@ Requires:	rubygem(rake)
 #Requires:	rubygem(ruby-debug)
 # Not found in Fedora yet (and optional)
 #Requires:	rubygem(rr)
-Provides:	rubygem(%{gemname}) = %{version}-%{release}
+Provides:	rubygem(%{gem_name}) = %{version}-%{release}
 BuildArch:	noarch
 
 %description
@@ -70,20 +67,14 @@ This package contains documentation for %{name}.
 %prep
 %setup -q -c -T
 
-mkdir -p .%{gemdir}
-gem install \
-	-V \
-	--local \
-	--install-dir .%{gemdir} \
-	--bindir .%{_bindir} \
-	--force \
-	--rdoc \
-	%{SOURCE0}
+TOPDIR=$(pwd)
+mkdir tmpunpackdir
+pushd tmpunpackdir
 
-chmod 0644 .%{gemdir}/cache/%{gemname}-%{fullver}.gem
+gem unpack %{SOURCE0}
+cd %{gem_name}-%{version}
 
 # rpmlint
-pushd .%{geminstdir}
 grep -rl '^#![ \t]*/usr/bin' ./lib| \
 	xargs sed -i -e '\@^#![ \t]*/usr/bin@d'
 
@@ -99,9 +90,25 @@ EOF
 
 %patch0 -p1
 
+gem specification -l --ruby %{SOURCE0} > %{gem_name}.gemspec
+gem build %{gem_name}.gemspec
+mv %{gem_name}-%{version}.gem $TOPDIR
+
 popd
+rm -rf tmpunpackdir
 
 %build
+mkdir -p .%{gem_dir}
+gem install \
+	-V \
+	--local \
+	--install-dir .%{gem_dir} \
+	--bindir .%{_bindir} \
+	--force \
+	--rdoc \
+	%{gem_name}-%{version}.gem
+
+#chmod 0644 ./%{gem_cache}
 
 %install
 mkdir -p %{buildroot}%{_prefix}
@@ -112,44 +119,40 @@ cp -a .%{_prefix}/* %{buildroot}%{_prefix}/
 mv %{buildroot}%{_bindir}/autospec{,2}
 
 # cleanups
-rm -f %{buildroot}%{geminstdir}/{.document,.gitignore,.treasure_map.rb,.rspec,.travis.yml,spec.txt,.yardopts}
+rm -f %{buildroot}%{gem_instdir}/{.document,.gitignore,.treasure_map.rb,.rspec,.travis.yml,spec.txt,.yardopts}
 
 %if 0%{?need_bootstrap} < 1
 %check
-pushd .%{geminstdir}
-# spec/autotest/failed_results_re_spec.rb (and others) fail, skipping this for now
-# (need investigating)
-# and now also some other tests fail
-ruby -rubygems -Ilib/ -S exe/rspec \
-	$(ls -1 spec/rspec/*_spec.rb spec/rspec/*/*_spec.rb | \
-		grep -v configuration_options_spec | \
-		grep -v drb_options_spec ) \
-	|| :
+pushd .%{gem_instdir}
+# Test failure needs investigation...
+ruby -rubygems -Ilib/ -S exe/rspec || :
 %endif
 
 %files
 %defattr(-,root,root,-)
-%dir	%{geminstdir}
+%dir	%{gem_instdir}
 
-%doc	%{geminstdir}/License.txt
-%doc	%{geminstdir}/*.md
+%doc	%{gem_instdir}/License.txt
+%doc	%{gem_instdir}/*.md
 
 %{_bindir}/autospec2
 %{_bindir}/rspec
-%{geminstdir}/exe/
-%{geminstdir}/lib/
+%{gem_instdir}/exe/
+%{gem_instdir}/lib/
 
-%{gemdir}/cache/%{gemname}-%{fullver}.gem
-%{gemdir}/specifications/%{gemname}-%{fullver}.gemspec
-
+%exclude	%{gem_cache}
+%{gem_spec}
 
 %files	doc
 %defattr(-,root,root,-)
-%{gemdir}/doc/%{gemname}-%{fullver}
-%{geminstdir}/features/
-%{geminstdir}/spec/
+%{gem_docdir}
+%{gem_instdir}/features/
+%exclude	%{gem_instdir}/spec/
 
 %changelog
+* Wed Jan  2 2013 Mamoru TASAKA <mtasaka@fedoraproject.org> - 2.12.2-1
+- 2.12.2
+
 * Thu Oct 11 2012 Mamoru Tasaka <mtasaka@fedoraproject.org> - 2.11.1-1
 - 2.11.1
 - Drop dependency for mocks and expectations
