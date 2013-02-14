@@ -18,7 +18,7 @@
 Summary:	Rspec-2 runner and formatters
 Name:		rubygem-%{gem_name}
 Version:	%{majorver}
-Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}
+Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}.1
 
 Group:		Development/Languages
 License:	MIT
@@ -137,6 +137,9 @@ ruby -rubygems -Ilib/ -S exe/rspec || :
 %exclude	%{gem_instdir}/spec/
 
 %changelog
+* Thu Feb 14 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.12.2-2.1
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
+
 * Wed Jan  2 2013 Mamoru TASAKA <mtasaka@fedoraproject.org> - 2.12.2-2
 - Use aruba, which is already in Fedora, drop no-longer-needed
   patch
