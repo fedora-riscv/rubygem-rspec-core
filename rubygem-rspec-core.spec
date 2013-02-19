@@ -7,25 +7,24 @@
 
 %global	gem_name	rspec-core
 
-%global	rubyabi	1.9.1
 
 # %%check section needs rspec-core, however rspec-core depends on rspec-mocks
 # runtime part of rspec-mocks does not depend on rspec-core
-%global	need_bootstrap_set	0
+%global	need_bootstrap_set	1
 
 %{!?need_bootstrap:	%global	need_bootstrap	%{need_bootstrap_set}}
 
 Summary:	Rspec-2 runner and formatters
 Name:		rubygem-%{gem_name}
 Version:	%{majorver}
-Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}.1
+Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}.2
 
 Group:		Development/Languages
 License:	MIT
 URL:		http://github.com/rspec/rspec-mocks
 Source0:	http://rubygems.org/gems/%{gem_name}-%{fullver}.gem
 
-BuildRequires:	ruby(abi) = %{rubyabi}
+BuildRequires:	ruby(release)
 BuildRequires:	rubygems-devel
 %if 0%{?need_bootstrap} < 1
 BuildRequires:	rubygem(ZenTest)
@@ -34,7 +33,7 @@ BuildRequires:	rubygem(rspec-expectations)
 BuildRequires:	rubygem(rspec-mocks)
 BuildRequires:	rubygem(aruba)
 %endif
-Requires:	ruby(abi) = %{rubyabi}
+Requires:	ruby(release)
 # When killing the below dependency, a notification to mailing list
 # is needed
 #Requires:	rubygem(rspec-expectations)
@@ -85,15 +84,7 @@ popd
 rm -rf tmpunpackdir
 
 %build
-mkdir -p .%{gem_dir}
-gem install \
-	-V \
-	--local \
-	--install-dir .%{gem_dir} \
-	--bindir .%{_bindir} \
-	--force \
-	--rdoc \
-	%{gem_name}-%{version}.gem
+%gem_install
 
 #chmod 0644 ./%{gem_cache}
 
@@ -137,6 +128,9 @@ ruby -rubygems -Ilib/ -S exe/rspec || :
 %exclude	%{gem_instdir}/spec/
 
 %changelog
+* Tue Feb 19 2013 Vít Ondruch <vondruch@redhat.com> - 2.12.2-3
+- Rebuild for https://fedoraproject.org/wiki/Features/Ruby_2.0.0
+
 * Thu Feb 14 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.12.2-2.1
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
 
