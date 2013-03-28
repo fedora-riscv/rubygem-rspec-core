@@ -1,16 +1,16 @@
-%global	majorver	2.12.2
+%global	majorver	2.13.1
 #%%global	preminorver	.rc6
 %global	rpmminorver	.%(echo %preminorver | sed -e 's|^\\.\\.*||')
 %global	fullver	%{majorver}%{?preminorver}
 
-%global	fedorarel	3
+%global	fedorarel	1
 
 %global	gem_name	rspec-core
 
 
 # %%check section needs rspec-core, however rspec-core depends on rspec-mocks
 # runtime part of rspec-mocks does not depend on rspec-core
-%global	need_bootstrap_set	0
+%global	need_bootstrap_set	1
 
 %{!?need_bootstrap:	%global	need_bootstrap	%{need_bootstrap_set}}
 
@@ -131,6 +131,9 @@ ruby -rubygems -Ilib/ -S exe/rspec || :
 %exclude	%{gem_instdir}/spec/
 
 %changelog
+* Thu Mar 28 2013 Mamoru TASAKA <mtasaka@fedoraproject.org> - 2.13.1-1
+- 2.13.1
+
 * Tue Feb 19 2013 Vít Ondruch <vondruch@redhat.com> - 2.12.2-3
 - Rebuild for https://fedoraproject.org/wiki/Features/Ruby_2.0.0
 
