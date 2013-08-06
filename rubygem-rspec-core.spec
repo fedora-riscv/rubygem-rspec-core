@@ -10,14 +10,14 @@
 
 # %%check section needs rspec-core, however rspec-core depends on rspec-mocks
 # runtime part of rspec-mocks does not depend on rspec-core
-%global	need_bootstrap_set	1
+%global	need_bootstrap_set	0
 
 %{!?need_bootstrap:	%global	need_bootstrap	%{need_bootstrap_set}}
 
 Summary:	Rspec-2 runner and formatters
 Name:		rubygem-%{gem_name}
 Version:	%{majorver}
-Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}
+Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}.1
 
 Group:		Development/Languages
 License:	MIT
@@ -131,6 +131,9 @@ ruby -rubygems -Ilib/ -S exe/rspec || :
 %exclude	%{gem_instdir}/spec/
 
 %changelog
+* Tue Aug  6 2013 Mamoru TASAKA <mtasaka@fedoraproject.org>
+- Again enable test suite
+
 * Tue Aug  6 2013 Mamoru TASAKA <mtasaka@fedoraproject.org> - 2.13.1-3
 - Bootstrap for rubygem-gherkin <- rubygem-cucumber
 
