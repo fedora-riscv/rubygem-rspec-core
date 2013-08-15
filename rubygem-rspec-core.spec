@@ -3,21 +3,21 @@
 %global	rpmminorver	.%(echo %preminorver | sed -e 's|^\\.\\.*||')
 %global	fullver	%{majorver}%{?preminorver}
 
-%global	fedorarel	1
+%global	fedorarel	2
 
 %global	gem_name	rspec-core
 
 
 # %%check section needs rspec-core, however rspec-core depends on rspec-mocks
 # runtime part of rspec-mocks does not depend on rspec-core
-%global	need_bootstrap_set	1
+%global	need_bootstrap_set	0
 
 %{!?need_bootstrap:	%global	need_bootstrap	%{need_bootstrap_set}}
 
 Summary:	Rspec-2 runner and formatters
 Name:		rubygem-%{gem_name}
 Version:	%{majorver}
-Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}.1
+Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}
 
 Group:		Development/Languages
 License:	MIT
@@ -132,6 +132,9 @@ ruby -rubygems -Ilib/ -S exe/rspec || :
 %exclude	%{gem_instdir}/spec/
 
 %changelog
+* Fri Aug 16 2013 Mamoru TASAKA <mtasaka@fedoraproject.og> - 2.14.5-2
+- Enable test suite again
+
 * Fri Aug 16 2013 Mamoru TASAKA <mtasaka@fedoraproject.og> - 2.14.5-1
 - 2.14.5
 
