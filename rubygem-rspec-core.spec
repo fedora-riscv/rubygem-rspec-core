@@ -1,16 +1,16 @@
-%global	majorver	2.13.1
+%global	majorver	2.14.5
 #%%global	preminorver	.rc6
 %global	rpmminorver	.%(echo %preminorver | sed -e 's|^\\.\\.*||')
 %global	fullver	%{majorver}%{?preminorver}
 
-%global	fedorarel	3
+%global	fedorarel	1
 
 %global	gem_name	rspec-core
 
 
 # %%check section needs rspec-core, however rspec-core depends on rspec-mocks
 # runtime part of rspec-mocks does not depend on rspec-core
-%global	need_bootstrap_set	0
+%global	need_bootstrap_set	1
 
 %{!?need_bootstrap:	%global	need_bootstrap	%{need_bootstrap_set}}
 
@@ -102,6 +102,7 @@ rm -f %{buildroot}%{gem_instdir}/{.document,.gitignore,.treasure_map.rb,.rspec,.
 
 %if 0%{?need_bootstrap} < 1
 %check
+LANG=en_US.UTF-8
 pushd .%{gem_instdir}
 # Test failure needs investigation...
 # There are is some missing template for Ruby 2.0.0:
@@ -131,6 +132,9 @@ ruby -rubygems -Ilib/ -S exe/rspec || :
 %exclude	%{gem_instdir}/spec/
 
 %changelog
+* Fri Aug 16 2013 Mamoru TASAKA <mtasaka@fedoraproject.og> - 2.14.5-1
+- 2.14.5
+
 * Tue Aug  6 2013 Mamoru TASAKA <mtasaka@fedoraproject.org>
 - Again enable test suite
 
