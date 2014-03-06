@@ -1,4 +1,4 @@
-%global	majorver	2.14.7
+%global	majorver	2.14.8
 #%%global	preminorver	.rc6
 %global	rpmminorver	.%(echo %preminorver | sed -e 's|^\\.\\.*||')
 %global	fullver	%{majorver}%{?preminorver}
@@ -132,6 +132,9 @@ ruby -rubygems -Ilib/ -S exe/rspec || :
 %exclude	%{gem_instdir}/spec/
 
 %changelog
+* Thu Mar  6 2014 Mamoru TASAKA <mtasaka@fedoraproject.org> - 2.14.8-1
+- 2.14.8
+
 * Mon Nov 11 2013 Mamoru TASAKA <mtasaka@fedoraproject.org> - 2.14.7-1
 - 2.14.7
 
