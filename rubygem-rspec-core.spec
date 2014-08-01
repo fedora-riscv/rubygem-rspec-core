@@ -1,4 +1,4 @@
-%global	majorver	2.13.1
+%global	majorver	2.14.8
 #%%global	preminorver	.rc6
 %global	rpmminorver	.%(echo %preminorver | sed -e 's|^\\.\\.*||')
 %global	fullver	%{majorver}%{?preminorver}
@@ -10,14 +10,14 @@
 
 # %%check section needs rspec-core, however rspec-core depends on rspec-mocks
 # runtime part of rspec-mocks does not depend on rspec-core
-%global	need_bootstrap_set	1
+%global	need_bootstrap_set	0
 
 %{!?need_bootstrap:	%global	need_bootstrap	%{need_bootstrap_set}}
 
 Summary:	Rspec-2 runner and formatters
 Name:		rubygem-%{gem_name}
 Version:	%{majorver}
-Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}
+Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}.1
 
 Group:		Development/Languages
 License:	MIT
@@ -102,6 +102,7 @@ rm -f %{buildroot}%{gem_instdir}/{.document,.gitignore,.treasure_map.rb,.rspec,.
 
 %if 0%{?need_bootstrap} < 1
 %check
+LANG=en_US.UTF-8
 pushd .%{gem_instdir}
 # Test failure needs investigation...
 # There are is some missing template for Ruby 2.0.0:
@@ -131,6 +132,36 @@ ruby -rubygems -Ilib/ -S exe/rspec || :
 %exclude	%{gem_instdir}/spec/
 
 %changelog
+* Sun Jun 08 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.14.8-1.1
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
+* Thu Mar  6 2014 Mamoru TASAKA <mtasaka@fedoraproject.org> - 2.14.8-1
+- 2.14.8
+
+* Mon Nov 11 2013 Mamoru TASAKA <mtasaka@fedoraproject.org> - 2.14.7-1
+- 2.14.7
+
+* Thu Oct 24 2013 Mamoru TASAKA <mtasaka@fedoraproject.org> - 2.14.6-1
+- 2.14.6
+
+* Fri Aug 16 2013 Mamoru TASAKA <mtasaka@fedoraproject.org> - 2.14.5-2
+- Enable test suite again
+
+* Fri Aug 16 2013 Mamoru TASAKA <mtasaka@fedoraproject.org> - 2.14.5-1
+- 2.14.5
+
+* Tue Aug  6 2013 Mamoru TASAKA <mtasaka@fedoraproject.org>
+- Again enable test suite
+
+* Tue Aug  6 2013 Mamoru TASAKA <mtasaka@fedoraproject.org> - 2.13.1-3
+- Bootstrap for rubygem-gherkin <- rubygem-cucumber
+
+* Sun Aug 04 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.13.1-2.1
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
+
+* Thu Mar 28 2013 Mamoru TASAKA <mtasaka@fedoraproject.org> - 2.13.1-2
+- Enable test suite again
+
 * Thu Mar 28 2013 Mamoru TASAKA <mtasaka@fedoraproject.org> - 2.13.1-1
 - 2.13.1
 
