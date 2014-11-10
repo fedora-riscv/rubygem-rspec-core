@@ -93,6 +93,11 @@ FAILFILE+=("spec/rspec/core/formatters/progress_formatter_spec.rb")
 FAILTEST+=("produces the expected full output")
 FAILFILE+=("spec/rspec/core/formatters/documentation_formatter_spec.rb")
 FAILTEST+=("produces the expected full output")
+# NET??
+FAILFILE+=("spec/rspec/core/runner_spec.rb")
+FAILTEST+=("if drb server is started with 127.0.0.1")
+FAILFILE+=("spec/rspec/core/runner_spec.rb")
+FAILTEST+=("if drb server is started with localhost")
 
 for ((i = 0; i < ${#FAILFILE[@]}; i++)) {
 	sed -i \
