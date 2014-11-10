@@ -17,7 +17,7 @@
 Summary:	Rspec-2 runner and formatters
 Name:		rubygem-%{gem_name}
 Version:	%{majorver}
-Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}.0
+Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}.0.0
 
 Group:		Development/Languages
 License:	MIT
@@ -132,6 +132,9 @@ ruby -rubygems -Ilib/ -S exe/rspec || :
 %exclude	%{gem_instdir}/spec/
 
 %changelog
+* Mon Nov 10 2014 Troy Dawson <tdawson@redhat.com> - 2.14.8-1.0.0
+- Bump release for rebuild on epel7
+
 * Fri Aug 01 2014 Troy Dawson <tdawson@redhat.com> - 2.14.8-1.0
 - Remove testing to break dependency circle
 
