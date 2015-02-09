@@ -1,15 +1,15 @@
-%global	majorver	3.1.7
+%global	majorver	3.2.0
 #%%global	preminorver	.rc6
 %global	rpmminorver	.%(echo %preminorver | sed -e 's|^\\.\\.*||')
 %global	fullver	%{majorver}%{?preminorver}
 
-%global	fedorarel	2
+%global	fedorarel	1
 
 %global	gem_name	rspec-core
 
 # %%check section needs rspec-core, however rspec-core depends on rspec-mocks
 # runtime part of rspec-mocks does not depend on rspec-core
-%global	need_bootstrap_set	0
+%global	need_bootstrap_set	1
 
 Summary:	Rspec-2 runner and formatters
 Name:		rubygem-%{gem_name}
@@ -128,6 +128,10 @@ popd
 %{gem_docdir}
 
 %changelog
+* Mon Feb  9 2015 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.2.0-1
+- 3.2.0
+- Once disable tests
+
 * Mon Nov 10 2014 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.1.7-2
 - Enable tests
 
