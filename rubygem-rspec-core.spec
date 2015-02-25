@@ -1,9 +1,9 @@
-%global	majorver	3.2.0
+%global	majorver	3.2.1
 #%%global	preminorver	.rc6
 %global	rpmminorver	.%(echo %preminorver | sed -e 's|^\\.\\.*||')
 %global	fullver	%{majorver}%{?preminorver}
 
-%global	fedorarel	2
+%global	fedorarel	1
 
 %global	gem_name	rspec-core
 
@@ -128,6 +128,9 @@ popd
 %{gem_docdir}
 
 %changelog
+* Wed Feb 25 2015 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.2.1-1
+- 3.2.1
+
 * Mon Feb  9 2015 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.2.0-2
 - Enable tests again
 
