@@ -1,4 +1,4 @@
-%global	majorver	3.2.1
+%global	majorver	3.2.2
 #%%global	preminorver	.rc6
 %global	rpmminorver	.%(echo %preminorver | sed -e 's|^\\.\\.*||')
 %global	fullver	%{majorver}%{?preminorver}
@@ -128,6 +128,9 @@ popd
 %{gem_docdir}
 
 %changelog
+* Thu Mar 12 2015 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.2.2-1
+- 3.2.2
+
 * Wed Feb 25 2015 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.2.1-1
 - 3.2.1
 
