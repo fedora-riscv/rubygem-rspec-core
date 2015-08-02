@@ -36,6 +36,7 @@ BuildRequires:	rubygem(aruba)
 BuildRequires:	rubygem(flexmock)
 BuildRequires:	rubygem(mocha)
 BuildRequires:	rubygem(rr)
+BuildRequires:	git
 %endif
 # Make the following installed by default
 # lib/rspec/core/rake_task
