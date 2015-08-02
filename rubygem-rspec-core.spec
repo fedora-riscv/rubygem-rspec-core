@@ -36,6 +36,7 @@ BuildRequires:	rubygem(aruba)
 BuildRequires:	rubygem(flexmock)
 BuildRequires:	rubygem(mocha)
 BuildRequires:	rubygem(rr)
+BuildRequires:	rubygem(coderay)
 BuildRequires:	git
 %endif
 # Make the following installed by default
@@ -100,12 +101,12 @@ FAILTEST+=("if drb server is started with 127.0.0.1")
 FAILFILE+=("spec/rspec/core/runner_spec.rb")
 FAILTEST+=("if drb server is started with localhost")
 # ???
-FAILFILE+=("spec/rspec/core/configuration_spec.rb ")
+FAILFILE+=("spec/rspec/core/configuration_spec.rb")
 FAILTEST+=("does not load files in the default path when run by ruby")
 
 for ((i = 0; i < ${#FAILFILE[@]}; i++)) {
 	sed -i \
-		-e "\@${FAILTEST[$i]}@s|do|, :broken => true do|" \
+		-e "\@${FAILTEST[$i]}@s|do$|, :broken => true do|" \
 		${FAILFILE[$i]}
 }
 
