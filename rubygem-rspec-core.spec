@@ -3,7 +3,7 @@
 %global	rpmminorver	.%(echo %preminorver | sed -e 's|^\\.\\.*||')
 %global	fullver	%{majorver}%{?preminorver}
 
-%global	fedorarel	2
+%global	fedorarel	3
 
 %global	gem_name	rspec-core
 
@@ -37,6 +37,7 @@ BuildRequires:	rubygem(flexmock)
 BuildRequires:	rubygem(mocha)
 BuildRequires:	rubygem(rr)
 BuildRequires:	rubygem(coderay)
+BuildRequires:	rubygem(thread_order)
 BuildRequires:	git
 %endif
 # Make the following installed by default
@@ -110,23 +111,10 @@ for ((i = 0; i < ${#FAILFILE[@]}; i++)) {
 		${FAILFILE[$i]}
 }
 
-# FIXME
-# thread_order not in Fedora yet
-for f in \
-	spec/rspec/core/memoized_helpers_spec.rb \
-	spec/rspec/core/reentrant_mutex_spec.rb \
-	%{nil}
-do
-	mv $f $f.skip
-	echo > $f
-done
-
 ruby -rubygems -Ilib/ -S exe/rspec || \
 	ruby -rubygems -Ilib/ -S exe/rspec --tag ~broken
 
 popd
-
-find . -name \*.skip | while read f ; do mv $f ${f%.skip} ; done
 
 %endif
 
@@ -147,6 +135,9 @@ find . -name \*.skip | while read f ; do mv $f ${f%.skip} ; done
 %{gem_docdir}
 
 %changelog
+* Wed Aug 12 2015 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.3.2-3
+- Enable thread_order dependent tests
+
 * Sun Aug  2 2015 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.3.2-2
 - Enable tests again
 
