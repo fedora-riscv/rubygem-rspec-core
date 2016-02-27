@@ -1,4 +1,4 @@
-%global	majorver	3.4.2
+%global	majorver	3.4.3
 #%%global	preminorver	.rc6
 %global	rpmminorver	.%(echo %preminorver | sed -e 's|^\\.\\.*||')
 %global	fullver	%{majorver}%{?preminorver}
@@ -14,7 +14,7 @@
 Summary:	Rspec-2 runner and formatters
 Name:		rubygem-%{gem_name}
 Version:	%{majorver}
-Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}.1
+Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}
 
 Group:		Development/Languages
 License:	MIT
@@ -39,6 +39,11 @@ BuildRequires:	rubygem(rr)
 BuildRequires:	rubygem(coderay)
 BuildRequires:	rubygem(thread_order)
 BuildRequires:	git
+
+%if 0%{?fedora} >= 24
+BuildRequires:	glibc-langpack-en
+%endif
+
 %endif
 # Make the following installed by default
 # lib/rspec/core/rake_task
@@ -133,6 +138,9 @@ popd
 %{gem_docdir}
 
 %changelog
+* Sun Feb 28 2016 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.4.3-1
+- 3.4.3
+
 * Thu Feb 04 2016 Fedora Release Engineering <releng@fedoraproject.org> - 3.4.2-1.1
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
 
