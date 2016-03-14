@@ -1,4 +1,4 @@
-%global	majorver	3.4.3
+%global	majorver	3.4.4
 #%%global	preminorver	.rc6
 %global	rpmminorver	.%(echo %preminorver | sed -e 's|^\\.\\.*||')
 %global	fullver	%{majorver}%{?preminorver}
@@ -10,6 +10,11 @@
 # %%check section needs rspec-core, however rspec-core depends on rspec-mocks
 # runtime part of rspec-mocks does not depend on rspec-core
 %global	need_bootstrap_set	0
+%if 0%{?fedora} >= 25
+# Disable test for now due to cucumber v.s. gherkin dependency issue
+# pulled by aruba
+%global	need_bootstrap_set	1
+%endif
 
 Summary:	Rspec-2 runner and formatters
 Name:		rubygem-%{gem_name}
@@ -138,6 +143,9 @@ popd
 %{gem_docdir}
 
 %changelog
+* Mon Mar 14 2016 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.4.4-1
+- 3.4.4
+
 * Sun Feb 28 2016 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.4.3-1
 - 3.4.3
 
