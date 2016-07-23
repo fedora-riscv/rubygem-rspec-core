@@ -1,15 +1,15 @@
-%global	majorver	3.4.4
+%global	majorver	3.5.1
 #%%global	preminorver	.rc6
 %global	rpmminorver	.%(echo %preminorver | sed -e 's|^\\.\\.*||')
 %global	fullver	%{majorver}%{?preminorver}
 
-%global	fedorarel	1
+%global	fedorarel	0.1
 
 %global	gem_name	rspec-core
 
 # %%check section needs rspec-core, however rspec-core depends on rspec-mocks
 # runtime part of rspec-mocks does not depend on rspec-core
-%global	need_bootstrap_set	0
+%global	need_bootstrap_set	1
 %if 0%{?fedora} >= 25
 # Disable test for now due to cucumber v.s. gherkin dependency issue
 # pulled by aruba
@@ -143,6 +143,10 @@ popd
 %{gem_docdir}
 
 %changelog
+* Sat Jul 23 2016 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.5.1-0.1
+- 3.5.1
+- Once disable tests
+
 * Mon Mar 14 2016 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.4.4-1
 - 3.4.4
 
