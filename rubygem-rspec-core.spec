@@ -1,4 +1,4 @@
-%global	majorver	3.5.1
+%global	majorver	3.5.2
 #%%global	preminorver	.rc6
 %global	rpmminorver	.%(echo %preminorver | sed -e 's|^\\.\\.*||')
 %global	fullver	%{majorver}%{?preminorver}
@@ -143,6 +143,9 @@ popd
 %{gem_docdir}
 
 %changelog
+* Mon Aug  1 2016 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.5.2-1
+- 3.5.2
+
 * Sun Jul 24 2016 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.5.1-1
 - Enable tests again
 
