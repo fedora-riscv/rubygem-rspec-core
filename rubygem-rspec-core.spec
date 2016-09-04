@@ -1,4 +1,4 @@
-%global	majorver	3.5.2
+%global	majorver	3.5.3
 #%%global	preminorver	.rc6
 %global	rpmminorver	.%(echo %preminorver | sed -e 's|^\\.\\.*||')
 %global	fullver	%{majorver}%{?preminorver}
@@ -105,7 +105,10 @@ FAILTEST+=("produces the expected full output")
 FAILFILE+=("spec/rspec/core/formatters/documentation_formatter_spec.rb")
 FAILTEST+=("produces the expected full output")
 FAILFILE+=("spec/rspec/core/source/syntax_highlighter_spec.rb")
-FAILTEST+=(""when CodeRay is available)
+FAILTEST+=("when CodeRay is available")
+# New from 3.5.3
+FAILFILE+=("spec/integration/suite_hooks_errors_spec.rb")
+FAILTEST+=("nicely formats errors")
 # NET??
 FAILFILE+=("spec/rspec/core/runner_spec.rb")
 FAILTEST+=("if drb server is started with 127.0.0.1")
@@ -143,6 +146,9 @@ popd
 %{gem_docdir}
 
 %changelog
+* Sun Sep  4 2016 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.5.3-1
+- 3.5.3
+
 * Mon Aug  1 2016 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.5.2-1
 - 3.5.2
 
