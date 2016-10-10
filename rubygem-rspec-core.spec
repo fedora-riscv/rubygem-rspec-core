@@ -1,4 +1,4 @@
-%global	majorver	3.5.3
+%global	majorver	3.5.4
 #%%global	preminorver	.rc6
 %global	rpmminorver	.%(echo %preminorver | sed -e 's|^\\.\\.*||')
 %global	fullver	%{majorver}%{?preminorver}
@@ -121,6 +121,9 @@ for ((i = 0; i < ${#FAILFILE[@]}; i++)) {
 		${FAILFILE[$i]}
 }
 
+# FIXME
+# Currently Fedora has aruba 0.6.2, however with aruba 0.14.0
+# many tests fail.
 ruby -rubygems -Ilib/ -S exe/rspec || \
 	ruby -rubygems -Ilib/ -S exe/rspec --tag ~broken
 
@@ -146,6 +149,9 @@ popd
 %{gem_docdir}
 
 %changelog
+* Mon Oct 10 2016 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.5.4-1
+- 3.5.4
+
 * Sun Sep  4 2016 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.5.3-1
 - 3.5.3
 
