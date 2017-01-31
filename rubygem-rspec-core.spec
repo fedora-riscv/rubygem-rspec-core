@@ -3,7 +3,7 @@
 %global	rpmminorver	.%(echo %preminorver | sed -e 's|^\\.\\.*||')
 %global	fullver	%{majorver}%{?preminorver}
 
-%global	fedorarel	1
+%global	fedorarel	2
 
 %global	gem_name	rspec-core
 
@@ -28,6 +28,9 @@ Source0:	http://rubygems.org/gems/%{gem_name}-%{fullver}.gem
 # %%{SOURCE2} %%{name} %%{version} 
 Source1:	rubygem-%{gem_name}-%{version}-full.tar.gz
 Source2:	rspec-related-create-full-tarball.sh
+# Fix Ruby 2.4 compatibility.
+# https://github.com/rspec/rspec-core/pull/2363
+Patch0:		rspec-core-3.5.4-Fixes-for-Ruby-2.4.patch
 
 #BuildRequires:	ruby(release)
 BuildRequires:	rubygems-devel
@@ -79,6 +82,10 @@ gem unpack %{SOURCE0}
 
 gem specification %{SOURCE0} -l --ruby > %{gem_name}.gemspec
 
+pushd  %{gem_name}-%{version}
+%patch0 -p1
+popd
+
 %build
 gem build %{gem_name}.gemspec
 %gem_install
@@ -121,9 +128,14 @@ for ((i = 0; i < ${#FAILFILE[@]}; i++)) {
 		${FAILFILE[$i]}
 }
 
-# FIXME
-# Currently Fedora has aruba 0.6.2, however with aruba 0.14.0
-# many tests fail.
+# Fix compatibility with Aruba 0.14.0. Not sure if this is upstreamble, since
+# it seems Aruba 0.7.0+ might have some Ruby 1.8.7 compatibility issues ...
+sed -i 's/in_current_dir/cd(".")/' \
+  spec/{integration/{failed_line_detection,filtering,persistence_failures}_spec,support/aruba_support}.rb
+sed -i 's/clean_current_dir/setup_aruba/' \
+  spec/integration/{failed_line_detection,filtering,persistence_failures,suite_hooks_errors}_spec.rb
+sed -i 's/remove_file/remove/' spec/integration/order_spec.rb
+
 ruby -rubygems -Ilib/ -S exe/rspec || \
 	ruby -rubygems -Ilib/ -S exe/rspec --tag ~broken
 
@@ -149,6 +161,9 @@ popd
 %{gem_docdir}
 
 %changelog
+* Tue Jan 31 2017 Vít Ondruch <vondruch@redhat.com> - 3.5.4-2
+- Fix Ruby 2.4 and Aruba 0.14.0 compatibility.
+
 * Mon Oct 10 2016 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.5.4-1
 - 3.5.4
 
