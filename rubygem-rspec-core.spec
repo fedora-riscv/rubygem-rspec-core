@@ -19,7 +19,7 @@
 Summary:	Rspec-2 runner and formatters
 Name:		rubygem-%{gem_name}
 Version:	%{majorver}
-Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}
+Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}.1
 
 Group:		Development/Languages
 License:	MIT
@@ -161,6 +161,9 @@ popd
 %{gem_docdir}
 
 %changelog
+* Sat Feb 11 2017 Fedora Release Engineering <releng@fedoraproject.org> - 3.5.4-2.1
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
+
 * Tue Jan 31 2017 Vít Ondruch <vondruch@redhat.com> - 3.5.4-2
 - Fix Ruby 2.4 and Aruba 0.14.0 compatibility.
 
