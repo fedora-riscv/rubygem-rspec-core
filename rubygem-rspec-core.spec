@@ -3,7 +3,7 @@
 %global	rpmminorver	.%(echo %preminorver | sed -e 's|^\\.\\.*||')
 %global	fullver	%{majorver}%{?preminorver}
 
-%global	fedorarel	2
+%global	fedorarel	3
 
 %global	gem_name	rspec-core
 
@@ -76,15 +76,9 @@ This package contains documentation for %{name}.
 
 
 %prep
-gem unpack %{SOURCE0}
-
-%setup -q -D -T -n  %{gem_name}-%{version} -a 1
-
+%setup -q -T -n %{gem_name}-%{version} -b 1
 gem specification %{SOURCE0} -l --ruby > %{gem_name}.gemspec
-
-pushd  %{gem_name}-%{version}
 %patch0 -p1
-popd
 
 %build
 gem build %{gem_name}.gemspec
@@ -100,7 +94,6 @@ rm -f %{buildroot}%{gem_instdir}/{.document,.yardopts}
 %if 0%{?need_bootstrap_set} < 1
 %check
 LANG=en_US.UTF-8
-pushd %{gem_name}-%{version}
 # Test failure needs investigation...
 # perhaps due to some incompatibility between libxml2 2.9.x
 # and rubygem-nokogiri
@@ -130,17 +123,16 @@ for ((i = 0; i < ${#FAILFILE[@]}; i++)) {
 
 # Fix compatibility with Aruba 0.14.0. Not sure if this is upstreamble, since
 # it seems Aruba 0.7.0+ might have some Ruby 1.8.7 compatibility issues ...
+%if 0%{?fedora} >= 26
 sed -i 's/in_current_dir/cd(".")/' \
   spec/{integration/{failed_line_detection,filtering,persistence_failures}_spec,support/aruba_support}.rb
 sed -i 's/clean_current_dir/setup_aruba/' \
   spec/integration/{failed_line_detection,filtering,persistence_failures,suite_hooks_errors}_spec.rb
 sed -i 's/remove_file/remove/' spec/integration/order_spec.rb
+%endif
 
 ruby -rubygems -Ilib/ -S exe/rspec || \
 	ruby -rubygems -Ilib/ -S exe/rspec --tag ~broken
-
-popd
-
 %endif
 
 %files
@@ -161,6 +153,10 @@ popd
 %{gem_docdir}
 
 %changelog
+* Tue Feb 21 2017 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.5.0-3
+- Always use full tar.gz for installed files and
+  keep using gem file for gem spec (ref: bug 1425220)
+
 * Sat Feb 11 2017 Fedora Release Engineering <releng@fedoraproject.org> - 3.5.4-2.1
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
 
