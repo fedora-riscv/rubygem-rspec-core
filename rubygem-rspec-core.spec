@@ -1,25 +1,25 @@
-%global	majorver	3.5.4
+%global	majorver	3.6.0
 #%%global	preminorver	.rc6
 %global	rpmminorver	.%(echo %preminorver | sed -e 's|^\\.\\.*||')
 %global	fullver	%{majorver}%{?preminorver}
 
-%global	fedorarel	3
+%global	fedorarel	0.1
 
 %global	gem_name	rspec-core
 
 # %%check section needs rspec-core, however rspec-core depends on rspec-mocks
 # runtime part of rspec-mocks does not depend on rspec-core
-%global	need_bootstrap_set	0
+%global	need_bootstrap_set	1
 %if 0%{?fedora} >= 25
 # Disable test for now due to cucumber v.s. gherkin dependency issue
 # pulled by aruba
-%global	need_bootstrap_set	0
+%global	need_bootstrap_set	1
 %endif
 
 Summary:	Rspec-2 runner and formatters
 Name:		rubygem-%{gem_name}
 Version:	%{majorver}
-Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}.1
+Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}
 
 Group:		Development/Languages
 License:	MIT
@@ -28,9 +28,6 @@ Source0:	http://rubygems.org/gems/%{gem_name}-%{fullver}.gem
 # %%{SOURCE2} %%{name} %%{version} 
 Source1:	rubygem-%{gem_name}-%{version}-full.tar.gz
 Source2:	rspec-related-create-full-tarball.sh
-# Fix Ruby 2.4 compatibility.
-# https://github.com/rspec/rspec-core/pull/2363
-Patch0:		rspec-core-3.5.4-Fixes-for-Ruby-2.4.patch
 
 #BuildRequires:	ruby(release)
 BuildRequires:	rubygems-devel
@@ -78,7 +75,6 @@ This package contains documentation for %{name}.
 %prep
 %setup -q -T -n %{gem_name}-%{version} -b 1
 gem specification %{SOURCE0} -l --ruby > %{gem_name}.gemspec
-%patch0 -p1
 
 %build
 gem build %{gem_name}.gemspec
@@ -104,11 +100,14 @@ FAILFILE+=("spec/rspec/core/formatters/progress_formatter_spec.rb")
 FAILTEST+=("produces the expected full output")
 FAILFILE+=("spec/rspec/core/formatters/documentation_formatter_spec.rb")
 FAILTEST+=("produces the expected full output")
-FAILFILE+=("spec/rspec/core/source/syntax_highlighter_spec.rb")
+FAILFILE+=("spec/rspec/core/formatters/syntax_highlighter_spec.rb")
 FAILTEST+=("when CodeRay is available")
 # New from 3.5.3
 FAILFILE+=("spec/integration/suite_hooks_errors_spec.rb")
 FAILTEST+=("nicely formats errors")
+# New from 3.6.0
+FAILFILE+=("spec/integration/spec_file_load_errors_spec.rb")
+FAILTEST+=("nicely handles load-time errors")
 # NET??
 FAILFILE+=("spec/rspec/core/runner_spec.rb")
 FAILTEST+=("if drb server is started with 127.0.0.1")
@@ -124,11 +123,17 @@ for ((i = 0; i < ${#FAILFILE[@]}; i++)) {
 # Fix compatibility with Aruba 0.14.0. Not sure if this is upstreamble, since
 # it seems Aruba 0.7.0+ might have some Ruby 1.8.7 compatibility issues ...
 %if 0%{?fedora} >= 26
-sed -i 's/in_current_dir/cd(".")/' \
-  spec/{integration/{failed_line_detection,filtering,persistence_failures}_spec,support/aruba_support}.rb
-sed -i 's/clean_current_dir/setup_aruba/' \
-  spec/integration/{failed_line_detection,filtering,persistence_failures,suite_hooks_errors}_spec.rb
-sed -i 's/remove_file/remove/' spec/integration/order_spec.rb
+grep -rl 'in_current_dir' | \
+	xargs sed -i 's/in_current_dir/cd(".")/'
+grep -rl 'clean_current_dir' spec/ | \
+	xargs sed -i 's/clean_current_dir/setup_aruba/'
+sed -i 's/remove_file/remove/' \
+	spec/integration/order_spec.rb \
+	%{nil}
+sed -i '\@expect.*dirs\.pop@d' \
+	spec/integration/spec_file_load_errors_spec.rb \
+	spec/integration/suite_hooks_errors_spec.rb \
+	%{nil}
 %endif
 
 ruby -rubygems -Ilib/ -S exe/rspec || \
@@ -153,6 +158,10 @@ ruby -rubygems -Ilib/ -S exe/rspec || \
 %{gem_docdir}
 
 %changelog
+* Sat May  6 2017 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.6.0-0.1
+- 3.6.0
+- Once disable tests
+
 * Tue Feb 21 2017 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.5.0-3
 - Always use full tar.gz for installed files and
   keep using gem file for gem spec (ref: bug 1425220)
