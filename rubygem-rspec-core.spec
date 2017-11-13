@@ -3,7 +3,7 @@
 %global	rpmminorver	.%(echo %preminorver | sed -e 's|^\\.\\.*||')
 %global	fullver	%{majorver}%{?preminorver}
 
-%global	fedorarel	0.1
+%global	fedorarel	1
 
 %global	gem_name	rspec-core
 
@@ -13,7 +13,7 @@
 %if 0%{?fedora} >= 25
 # Disable test for now due to cucumber v.s. gherkin dependency issue
 # pulled by aruba
-%global	need_bootstrap_set	1
+%global	need_bootstrap_set	0
 %endif
 
 Summary:	Rspec-2 runner and formatters
@@ -158,6 +158,9 @@ ruby -rubygems -Ilib/ -S exe/rspec || \
 %{gem_docdir}
 
 %changelog
+* Mon Nov 13 2017 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.7.0-1
+- Enable tests again
+
 * Mon Nov 13 2017 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.7.0-0.1
 - 3.7.0
 - Once disable tests
