@@ -1,9 +1,9 @@
-%global	majorver	3.6.0
+%global	majorver	3.7.0
 #%%global	preminorver	.rc6
 %global	rpmminorver	.%(echo %preminorver | sed -e 's|^\\.\\.*||')
 %global	fullver	%{majorver}%{?preminorver}
 
-%global	fedorarel	1
+%global	fedorarel	0.1
 
 %global	gem_name	rspec-core
 
@@ -13,13 +13,13 @@
 %if 0%{?fedora} >= 25
 # Disable test for now due to cucumber v.s. gherkin dependency issue
 # pulled by aruba
-%global	need_bootstrap_set	0
+%global	need_bootstrap_set	1
 %endif
 
 Summary:	Rspec-2 runner and formatters
 Name:		rubygem-%{gem_name}
 Version:	%{majorver}
-Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}.2
+Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}
 
 Group:		Development/Languages
 License:	MIT
@@ -158,6 +158,10 @@ ruby -rubygems -Ilib/ -S exe/rspec || \
 %{gem_docdir}
 
 %changelog
+* Mon Nov 13 2017 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.7.0-0.1
+- 3.7.0
+- Once disable tests
+
 * Thu Jul 27 2017 Fedora Release Engineering <releng@fedoraproject.org> - 3.6.0-1.2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
 
