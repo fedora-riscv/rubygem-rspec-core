@@ -19,7 +19,7 @@
 Summary:	Rspec-2 runner and formatters
 Name:		rubygem-%{gem_name}
 Version:	%{majorver}
-Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}
+Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}.1
 
 Group:		Development/Languages
 License:	MIT
@@ -158,6 +158,9 @@ ruby -rubygems -Ilib/ -S exe/rspec || \
 %{gem_docdir}
 
 %changelog
+* Fri Feb 09 2018 Fedora Release Engineering <releng@fedoraproject.org> - 3.7.1-1.1
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
+
 * Wed Jan  3 2018 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.7.1-1
 - 3.7.1
 
