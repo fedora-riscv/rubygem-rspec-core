@@ -3,7 +3,7 @@
 %global	rpmminorver	.%(echo %preminorver | sed -e 's|^\\.\\.*||')
 %global	fullver	%{majorver}%{?preminorver}
 
-%global	fedorarel	1
+%global	fedorarel	2
 
 %global	gem_name	rspec-core
 
@@ -16,10 +16,12 @@
 %global	need_bootstrap_set	0
 %endif
 
+%undefine __brp_mangle_shebangs
+
 Summary:	Rspec-2 runner and formatters
 Name:		rubygem-%{gem_name}
 Version:	%{majorver}
-Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}.1
+Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}
 
 Group:		Development/Languages
 License:	MIT
@@ -136,8 +138,8 @@ sed -i '\@expect.*dirs\.pop@d' \
 	%{nil}
 %endif
 
-ruby -rubygems -Ilib/ -S exe/rspec || \
-	ruby -rubygems -Ilib/ -S exe/rspec --tag ~broken
+ruby -rrubygems -Ilib/ -S exe/rspec || \
+	ruby -rrubygems -Ilib/ -S exe/rspec --tag ~broken
 %endif
 
 %files
@@ -158,6 +160,9 @@ ruby -rubygems -Ilib/ -S exe/rspec || \
 %{gem_docdir}
 
 %changelog
+* Tue Feb 13 2018 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.7.1-2
+- ruby 2.5 drops -rubygems usage
+
 * Fri Feb 09 2018 Fedora Release Engineering <releng@fedoraproject.org> - 3.7.1-1.1
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
 
