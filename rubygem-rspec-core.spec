@@ -3,7 +3,7 @@
 %global	rpmminorver	.%(echo %preminorver | sed -e 's|^\\.\\.*||')
 %global	fullver	%{majorver}%{?preminorver}
 
-%global	fedorarel	2
+%global	fedorarel	3
 
 %global	gem_name	rspec-core
 
@@ -47,7 +47,7 @@ BuildRequires:	rubygem(coderay)
 BuildRequires:	rubygem(thread_order)
 BuildRequires:	git
 
-%if 0%{?fedora} >= 24
+%if 0%{?fedora} || 0%{?rhel} > 7
 BuildRequires:	glibc-langpack-en
 %endif
 
@@ -124,7 +124,7 @@ for ((i = 0; i < ${#FAILFILE[@]}; i++)) {
 
 # Fix compatibility with Aruba 0.14.0. Not sure if this is upstreamble, since
 # it seems Aruba 0.7.0+ might have some Ruby 1.8.7 compatibility issues ...
-%if 0%{?fedora} >= 26
+%if 0%{?fedora} >= 26 || 0%{?rhel} > 7
 grep -rl 'in_current_dir' | \
 	xargs sed -i 's/in_current_dir/cd(".")/'
 grep -rl 'clean_current_dir' spec/ | \
@@ -160,6 +160,9 @@ ruby -rrubygems -Ilib/ -S exe/rspec || \
 %{gem_docdir}
 
 %changelog
+* Fri Feb 23 2018 Troy Dawson <tdawson@redhat.com> - 3.7.1-3
+- Update conditionals
+
 * Tue Feb 13 2018 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.7.1-2
 - ruby 2.5 drops -rubygems usage
 
