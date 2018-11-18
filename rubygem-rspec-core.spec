@@ -21,13 +21,13 @@
 Summary:	Rspec-2 runner and formatters
 Name:		rubygem-%{gem_name}
 Version:	%{majorver}
-Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}.1
+Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}.2
 
 Group:		Development/Languages
 License:	MIT
 URL:		http://github.com/rspec/rspec-mocks
 Source0:	http://rubygems.org/gems/%{gem_name}-%{fullver}.gem
-# %%{SOURCE2} %%{name} %%{version} 
+# %%{SOURCE2} %%{name} %%{version}
 Source1:	rubygem-%{gem_name}-%{version}-full.tar.gz
 Source2:	rspec-related-create-full-tarball.sh
 
@@ -91,7 +91,7 @@ rm -f %{buildroot}%{gem_instdir}/{.document,.yardopts}
 
 %if 0%{?need_bootstrap_set} < 1
 %check
-LANG=en_US.UTF-8
+LANG=C.UTF-8
 # Test failure needs investigation...
 # perhaps due to some incompatibility between libxml2 2.9.x
 # and rubygem-nokogiri
@@ -160,6 +160,10 @@ ruby -rrubygems -Ilib/ -S exe/rspec || \
 %{gem_docdir}
 
 %changelog
+* Sun Nov 18 2018 Zbigniew Jędrzejewski-Szmek <zbyszek@in.waw.pl> - 3.7.1-3.2
+- Use C.UTF-8 locale
+  See https://fedoraproject.org/wiki/Changes/Remove_glibc-langpacks-all_from_buildroot
+
 * Sat Jul 14 2018 Fedora Release Engineering <releng@fedoraproject.org> - 3.7.1-3.1
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
 
