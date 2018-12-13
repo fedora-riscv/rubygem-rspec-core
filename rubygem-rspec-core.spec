@@ -1,27 +1,24 @@
-%global	majorver	3.7.1
+%global	majorver	3.8.0
 #%%global	preminorver	.rc6
 %global	rpmminorver	.%(echo %preminorver | sed -e 's|^\\.\\.*||')
 %global	fullver	%{majorver}%{?preminorver}
 
-%global	fedorarel	3
+%global	fedorarel	0.1
 
 %global	gem_name	rspec-core
 
 # %%check section needs rspec-core, however rspec-core depends on rspec-mocks
 # runtime part of rspec-mocks does not depend on rspec-core
-%global	need_bootstrap_set	0
-%if 0%{?fedora} >= 25
 # Disable test for now due to cucumber v.s. gherkin dependency issue
 # pulled by aruba
 %global	need_bootstrap_set	0
-%endif
 
 %undefine __brp_mangle_shebangs
 
 Summary:	Rspec-2 runner and formatters
 Name:		rubygem-%{gem_name}
 Version:	%{majorver}
-Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}.2
+Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}
 
 Group:		Development/Languages
 License:	MIT
@@ -102,8 +99,8 @@ FAILFILE+=("spec/rspec/core/formatters/progress_formatter_spec.rb")
 FAILTEST+=("produces the expected full output")
 FAILFILE+=("spec/rspec/core/formatters/documentation_formatter_spec.rb")
 FAILTEST+=("produces the expected full output")
-FAILFILE+=("spec/rspec/core/formatters/syntax_highlighter_spec.rb")
-FAILTEST+=("when CodeRay is available")
+#FAILFILE+=("spec/rspec/core/formatters/syntax_highlighter_spec.rb")
+#FAILTEST+=("when CodeRay is available")
 # New from 3.5.3
 FAILFILE+=("spec/integration/suite_hooks_errors_spec.rb")
 FAILTEST+=("nicely formats errors")
@@ -160,6 +157,10 @@ ruby -rrubygems -Ilib/ -S exe/rspec || \
 %{gem_docdir}
 
 %changelog
+* Wed Dec 12 2018 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.8.0-0.1
+- 3.8.0
+- Once disable test for bootstrap
+
 * Sun Nov 18 2018 Zbigniew Jędrzejewski-Szmek <zbyszek@in.waw.pl> - 3.7.1-3.2
 - Use C.UTF-8 locale
   See https://fedoraproject.org/wiki/Changes/Remove_glibc-langpacks-all_from_buildroot
