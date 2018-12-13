@@ -11,7 +11,7 @@
 # runtime part of rspec-mocks does not depend on rspec-core
 # Disable test for now due to cucumber v.s. gherkin dependency issue
 # pulled by aruba
-%global	need_bootstrap_set	0
+%global	need_bootstrap_set	1
 
 %undefine __brp_mangle_shebangs
 
