@@ -3,7 +3,7 @@
 %global	rpmminorver	.%(echo %preminorver | sed -e 's|^\\.\\.*||')
 %global	fullver	%{majorver}%{?preminorver}
 
-%global	fedorarel	1
+%global	fedorarel	2
 
 %global	gem_name	rspec-core
 
@@ -135,9 +135,21 @@ sed -i '\@expect.*dirs\.pop@d' \
 	%{nil}
 %endif
 
+# Well, when HOME variable is not set and tty is not a real one
+# but pseudo-tty, with current ruby implementation $ env -i ruby -e 'p Dir.home'
+# causes:
+# `home': couldn't find login name -- expanding `~' (ArgumentError)
+# - and this causes some test errors on rspec-core.
+# fixing this error without modifying rspec-core "code" is very hard,
+# once modifying source itself.
+sed -i.warn lib/rspec/core/configuration_options.rb \
+	-e '\@because the HOME environment variable is not set@s|RSpec\.warning|#RSpec.warning|'
+
 ruby -rrubygems -Ilib/ -S exe/rspec || \
 	ruby -rrubygems -Ilib/ -S exe/rspec --tag ~broken
 %endif
+
+mv lib/rspec/core/configuration_options.rb{.warn,}
 
 %files
 %dir	%{gem_instdir}
@@ -157,6 +169,10 @@ ruby -rrubygems -Ilib/ -S exe/rspec || \
 %{gem_docdir}
 
 %changelog
+* Tue Jan  1 2019 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.8.0-2
+- A Happy New Year
+- Suppress some test errors related to missing HOME env and real tty
+
 * Thu Dec 13 2018 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.8.0-1
 - Enable tests again
 
