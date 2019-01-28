@@ -20,7 +20,6 @@ Name:		rubygem-%{gem_name}
 Version:	%{majorver}
 Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}
 
-Group:		Development/Languages
 License:	MIT
 URL:		http://github.com/rspec/rspec-mocks
 Source0:	http://rubygems.org/gems/%{gem_name}-%{fullver}.gem
@@ -64,7 +63,6 @@ Behaviour Driven Development for Ruby.
 
 %package	doc
 Summary:	Documentation for %{name}
-Group:		Documentation
 Requires:	%{name} = %{version}-%{release}
 
 %description	doc
