@@ -1,4 +1,4 @@
-%global	majorver	3.8.1
+%global	majorver	3.8.2
 #%%global	preminorver	.rc6
 %global	rpmminorver	.%(echo %preminorver | sed -e 's|^\\.\\.*||')
 %global	fullver	%{majorver}%{?preminorver}
@@ -182,6 +182,9 @@ mv lib/rspec/core/configuration_options.rb{.warn,}
 %{gem_docdir}
 
 %changelog
+* Wed Jul 10 2019 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.8.2-1
+- 3.8.2
+
 * Fri Jun 21 2019 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.8.1-1
 - 3.8.1
 
