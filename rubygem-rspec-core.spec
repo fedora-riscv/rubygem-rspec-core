@@ -1,9 +1,9 @@
-%global	majorver	3.8.2
+%global	majorver	3.9.0
 #%%global	preminorver	.rc6
 %global	rpmminorver	.%(echo %preminorver | sed -e 's|^\\.\\.*||')
 %global	fullver	%{majorver}%{?preminorver}
 
-%global	fedorarel	1
+%global	fedorarel	0.1
 
 %global	gem_name	rspec-core
 
@@ -11,14 +11,14 @@
 # runtime part of rspec-mocks does not depend on rspec-core
 # Disable test for now due to cucumber v.s. gherkin dependency issue
 # pulled by aruba
-%global	need_bootstrap_set	0
+%global	need_bootstrap_set	1
 
 %undefine __brp_mangle_shebangs
 
 Summary:	Rspec-2 runner and formatters
 Name:		rubygem-%{gem_name}
 Version:	%{majorver}
-Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}.1
+Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}
 
 License:	MIT
 URL:		http://github.com/rspec/rspec-mocks
@@ -110,6 +110,7 @@ FAILFILE+=("spec/rspec/core/runner_spec.rb")
 FAILTEST+=("if drb server is started with 127.0.0.1")
 FAILFILE+=("spec/rspec/core/runner_spec.rb")
 FAILTEST+=("if drb server is started with localhost")
+%if 0
 # 3.8.0, ignore for now
 FAILFILE+=("spec/rspec/core/bisect/server_spec.rb")
 FAILTEST+=("receives suite results")
@@ -124,6 +125,10 @@ FAILFILE+=("spec/integration/bisect_runners_spec.rb")
 FAILTEST+=("raises BisectFailedError")
 FAILFILE+=("spec/integration/bisect_runners_spec.rb")
 FAILTEST+=("runs the specs in an isolated environment")
+%endif
+# New from 3.9.0
+FAILFILE+=("spec/integration/spec_file_load_errors_spec.rb")
+FAILTEST+=("prints a single error when it happens")
 
 for ((i = 0; i < ${#FAILFILE[@]}; i++)) {
 	sed -i \
@@ -131,22 +136,6 @@ for ((i = 0; i < ${#FAILFILE[@]}; i++)) {
 		${FAILFILE[$i]}
 }
 
-
-# Fix compatibility with Aruba 0.14.0. Not sure if this is upstreamble, since
-# it seems Aruba 0.7.0+ might have some Ruby 1.8.7 compatibility issues ...
-%if 0%{?fedora} >= 26 || 0%{?rhel} > 7
-grep -rl 'in_current_dir' | \
-	xargs sed -i 's/in_current_dir/cd(".")/'
-grep -rl 'clean_current_dir' spec/ | \
-	xargs sed -i 's/clean_current_dir/setup_aruba/'
-sed -i 's/remove_file/remove/' \
-	spec/integration/order_spec.rb \
-	%{nil}
-sed -i '\@expect.*dirs\.pop@d' \
-	spec/integration/spec_file_load_errors_spec.rb \
-	spec/integration/suite_hooks_errors_spec.rb \
-	%{nil}
-%endif
 
 # Well, when HOME variable is not set and tty is not a real one
 # but pseudo-tty, with current ruby implementation $ env -i ruby -e 'p Dir.home'
@@ -160,9 +149,10 @@ sed -i.warn lib/rspec/core/configuration_options.rb \
 
 ruby -rrubygems -Ilib/ -S exe/rspec || \
 	ruby -rrubygems -Ilib/ -S exe/rspec --tag ~broken
-%endif
 
 mv lib/rspec/core/configuration_options.rb{.warn,}
+
+%endif
 
 %files
 %dir	%{gem_instdir}
@@ -182,6 +172,10 @@ mv lib/rspec/core/configuration_options.rb{.warn,}
 %{gem_docdir}
 
 %changelog
+* Tue Dec 10 2019 amoru TASAKA <mtasaka@fedoraproject.org> - 3.9.0-0.1
+- 3.9.0
+- Once disable test for bootstrap
+
 * Fri Jul 26 2019 Fedora Release Engineering <releng@fedoraproject.org> - 3.8.2-1.1
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
 
