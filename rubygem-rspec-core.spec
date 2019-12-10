@@ -3,7 +3,7 @@
 %global	rpmminorver	.%(echo %preminorver | sed -e 's|^\\.\\.*||')
 %global	fullver	%{majorver}%{?preminorver}
 
-%global	fedorarel	1
+%global	fedorarel	2
 
 %global	gem_name	rspec-core
 
@@ -11,7 +11,7 @@
 # runtime part of rspec-mocks does not depend on rspec-core
 # Disable test for now due to cucumber v.s. gherkin dependency issue
 # pulled by aruba
-%global	need_bootstrap_set	1
+%global	need_bootstrap_set	0
 
 %undefine __brp_mangle_shebangs
 
@@ -172,7 +172,7 @@ mv lib/rspec/core/configuration_options.rb{.warn,}
 %{gem_docdir}
 
 %changelog
-* Tue Dec 10 2019 amoru TASAKA <mtasaka@fedoraproject.org> - 3.9.0-1
+* Tue Dec 10 2019 amoru TASAKA <mtasaka@fedoraproject.org> - 3.9.0-2
 - Enable tests again
 
 * Tue Dec 10 2019 amoru TASAKA <mtasaka@fedoraproject.org> - 3.9.0-0.1
