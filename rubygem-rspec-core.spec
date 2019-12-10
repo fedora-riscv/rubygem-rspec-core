@@ -110,22 +110,6 @@ FAILFILE+=("spec/rspec/core/runner_spec.rb")
 FAILTEST+=("if drb server is started with 127.0.0.1")
 FAILFILE+=("spec/rspec/core/runner_spec.rb")
 FAILTEST+=("if drb server is started with localhost")
-%if 0
-# 3.8.0, ignore for now
-FAILFILE+=("spec/rspec/core/bisect/server_spec.rb")
-FAILTEST+=("receives suite results")
-FAILFILE+=("spec/rspec/core/bisect/server_spec.rb")
-FAILTEST+=("aborts as soon as the last expected failure finishes")
-FAILFILE+=("spec/rspec/core/bisect/server_spec.rb")
-FAILTEST+=("aborts after an expected failure")
-# 3.8.0, ignore for now
-FAILFILE+=("spec/integration/bisect_runners_spec.rb")
-FAILTEST+=("honors.*run_all_when_everything_filtered")
-FAILFILE+=("spec/integration/bisect_runners_spec.rb")
-FAILTEST+=("raises BisectFailedError")
-FAILFILE+=("spec/integration/bisect_runners_spec.rb")
-FAILTEST+=("runs the specs in an isolated environment")
-%endif
 # New from 3.9.0
 FAILFILE+=("spec/integration/spec_file_load_errors_spec.rb")
 FAILTEST+=("prints a single error when it happens")
