@@ -1,9 +1,9 @@
-%global	majorver	3.9.0
+%global	majorver	3.9.1
 #%%global	preminorver	.rc6
 %global	rpmminorver	.%(echo %preminorver | sed -e 's|^\\.\\.*||')
 %global	fullver	%{majorver}%{?preminorver}
 
-%global	fedorarel	2
+%global	fedorarel	1
 
 %global	gem_name	rspec-core
 
@@ -156,6 +156,9 @@ mv lib/rspec/core/configuration_options.rb{.warn,}
 %{gem_docdir}
 
 %changelog
+* Mon Dec 30 2019 amoru TASAKA <mtasaka@fedoraproject.org> - 3.9.1-1
+- 3.9.1
+
 * Tue Dec 10 2019 amoru TASAKA <mtasaka@fedoraproject.org> - 3.9.0-2
 - Enable tests again
 
