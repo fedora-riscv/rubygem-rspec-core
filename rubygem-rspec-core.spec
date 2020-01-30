@@ -18,7 +18,7 @@
 Summary:	Rspec-2 runner and formatters
 Name:		rubygem-%{gem_name}
 Version:	%{majorver}
-Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}
+Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}.1
 
 License:	MIT
 URL:		http://github.com/rspec/rspec-mocks
@@ -156,6 +156,9 @@ mv lib/rspec/core/configuration_options.rb{.warn,}
 %{gem_docdir}
 
 %changelog
+* Thu Jan 30 2020 Fedora Release Engineering <releng@fedoraproject.org> - 3.9.1-1.1
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
+
 * Mon Dec 30 2019 amoru TASAKA <mtasaka@fedoraproject.org> - 3.9.1-1
 - 3.9.1
 
