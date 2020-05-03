@@ -1,4 +1,4 @@
-%global	majorver	3.9.1
+%global	majorver	3.9.2
 #%%global	preminorver	.rc6
 %global	rpmminorver	.%(echo %preminorver | sed -e 's|^\\.\\.*||')
 %global	fullver	%{majorver}%{?preminorver}
@@ -156,16 +156,19 @@ mv lib/rspec/core/configuration_options.rb{.warn,}
 %{gem_docdir}
 
 %changelog
+* Sun Mar  3 2020 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.9.2-1
+- 3.9.2
+
 * Thu Jan 30 2020 Fedora Release Engineering <releng@fedoraproject.org> - 3.9.1-1.1
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
 
-* Mon Dec 30 2019 amoru TASAKA <mtasaka@fedoraproject.org> - 3.9.1-1
+* Mon Dec 30 2019 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.9.1-1
 - 3.9.1
 
-* Tue Dec 10 2019 amoru TASAKA <mtasaka@fedoraproject.org> - 3.9.0-2
+* Tue Dec 10 2019 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.9.0-2
 - Enable tests again
 
-* Tue Dec 10 2019 amoru TASAKA <mtasaka@fedoraproject.org> - 3.9.0-0.1
+* Tue Dec 10 2019 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.9.0-0.1
 - 3.9.0
 - Once disable test for bootstrap
 
