@@ -3,7 +3,7 @@
 %global	rpmminorver	.%(echo %preminorver | sed -e 's|^\\.\\.*||')
 %global	fullver	%{majorver}%{?preminorver}
 
-%global	fedorarel	1
+%global	fedorarel	2
 
 %global	gem_name	rspec-core
 
@@ -18,7 +18,7 @@
 Summary:	Rspec-2 runner and formatters
 Name:		rubygem-%{gem_name}
 Version:	%{majorver}
-Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}.1
+Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}
 
 License:	MIT
 URL:		http://github.com/rspec/rspec-mocks
@@ -42,6 +42,8 @@ BuildRequires:	rubygem(rr)
 BuildRequires:	rubygem(coderay)
 BuildRequires:	rubygem(thread_order)
 BuildRequires:	git
+# New test
+BuildRequires:	rubygem(cucumber)
 
 %if 0%{?fedora} || 0%{?rhel} > 7
 BuildRequires:	glibc-langpack-en
@@ -134,6 +136,15 @@ sed -i.warn lib/rspec/core/configuration_options.rb \
 ruby -rrubygems -Ilib/ -S exe/rspec || \
 	ruby -rrubygems -Ilib/ -S exe/rspec --tag ~broken
 
+# Mark failing test as broken
+sed -i features/core_standalone.feature \
+	-e 's|@unsupported-on-rbx|@unsupported-on-rbx @broken|'
+sed -i features/command_line/init.feature \
+	-e 's|^\([ \t]*\)\(Scenario: Accept and use the recommended settings\)|\1@broken\n\1\2|'
+
+env RUBYOPT="-I$(pwd)/lib -rrubygems" ruby -S cucumber -v features/ || \
+	env RUBYOPT="-I$(pwd)/lib -rrubygems" ruby -S cucumber -v features/ --tag "not @broken"
+
 mv lib/rspec/core/configuration_options.rb{.warn,}
 
 %endif
@@ -156,7 +167,10 @@ mv lib/rspec/core/configuration_options.rb{.warn,}
 %{gem_docdir}
 
 %changelog
-* Sun Mar  3 2020 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.9.2-1
+* Sun May  3 2020 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.9.2-2
+- Enable cucumber test
+
+* Sun May  3 2020 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.9.2-1
 - 3.9.2
 
 * Thu Jan 30 2020 Fedora Release Engineering <releng@fedoraproject.org> - 3.9.1-1.1
