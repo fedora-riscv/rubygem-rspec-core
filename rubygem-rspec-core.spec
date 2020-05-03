@@ -44,6 +44,7 @@ BuildRequires:	rubygem(thread_order)
 BuildRequires:	git
 # New test
 BuildRequires:	rubygem(cucumber)
+BuildRequires:	rubygem(test-unit)
 
 %if 0%{?fedora} || 0%{?rhel} > 7
 BuildRequires:	glibc-langpack-en
