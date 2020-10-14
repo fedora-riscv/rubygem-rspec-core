@@ -1,9 +1,9 @@
-%global	majorver	3.9.2
+%global	majorver	3.9.3
 #%%global	preminorver	.rc6
 %global	rpmminorver	.%(echo %preminorver | sed -e 's|^\\.\\.*||')
 %global	fullver	%{majorver}%{?preminorver}
 
-%global	fedorarel	2
+%global	fedorarel	1
 
 %global	gem_name	rspec-core
 
@@ -143,8 +143,12 @@ sed -i features/core_standalone.feature \
 sed -i features/command_line/init.feature \
 	-e 's|^\([ \t]*\)\(Scenario: Accept and use the recommended settings\)|\1@broken\n\1\2|'
 
+# skip-when-diff-lcs-1.3 tests are introduced on 3.9.3
 env RUBYOPT="-I$(pwd)/lib -rrubygems" ruby -S cucumber -v features/ || \
-	env RUBYOPT="-I$(pwd)/lib -rrubygems" ruby -S cucumber -v features/ --tag "not @broken"
+	env RUBYOPT="-I$(pwd)/lib -rrubygems" ruby -S cucumber -v features/ \
+	--tag "not @broken" \
+	--tag "not @skip-when-diff-lcs-1.3" \
+	%{nil}
 
 mv lib/rspec/core/configuration_options.rb{.warn,}
 
@@ -168,6 +172,9 @@ mv lib/rspec/core/configuration_options.rb{.warn,}
 %{gem_docdir}
 
 %changelog
+* Wed Oct 14 2020 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.9.3-1
+- 3.9.3
+
 * Wed Jul 29 2020 Fedora Release Engineering <releng@fedoraproject.org> - 3.9.2-2.1
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
 
