@@ -15,7 +15,7 @@
 
 %undefine __brp_mangle_shebangs
 
-Summary:	Rspec-2 runner and formatters
+Summary:	RSpec runner and formatters
 Name:		rubygem-%{gem_name}
 Version:	%{majorver}
 Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}
@@ -62,7 +62,7 @@ Requires:	rubygem(rake)
 BuildArch:	noarch
 
 %description
-Behaviour Driven Development for Ruby.
+Behaviour Driven Development for Ruby. RSpec runner and example groups.
 
 %package	doc
 Summary:	Documentation for %{name}
