@@ -3,7 +3,7 @@
 %global	rpmminorver	.%(echo %preminorver | sed -e 's|^\\.\\.*||')
 %global	fullver	%{majorver}%{?preminorver}
 
-%global	fedorarel	2
+%global	fedorarel	3
 
 %global	gem_name	rspec-core
 
@@ -145,8 +145,15 @@ sed -i features/command_line/init.feature \
 	-e 's|^\([ \t]*\)\(Scenario: Accept and use the recommended settings\)|\1@broken\n\1\2|'
 
 # From ruby 3, once disabling
+# disabling tests failing with rr 1.2.1
 %if 0%{?fedora} >= 34
-mv features/command_line/warnings_option.feature{,.drop}
+for f in  \
+	features/command_line/warnings_option.feature \
+	features/mock_framework_integration/use_rr.feature \
+	%{nil}
+do
+	mv $f ${f}.drop
+done
 %endif
 
 # skip-when-diff-lcs-1.3 tests are introduced on 3.9.3
@@ -159,8 +166,13 @@ env RUBYOPT="-I$(pwd)/lib -rrubygems" ruby -S cucumber -v features/ || \
 mv lib/rspec/core/configuration_options.rb{.warn,}
 
 %if 0%{?fedora} >= 34
-mv features/command_line/warnings_option.feature{.drop,}
-
+for f in  \
+	features/command_line/warnings_option.feature \
+	features/mock_framework_integration/use_rr.feature \
+	%{nil}
+do
+	mv ${f}.drop ${f}
+done
 %endif
 
 %endif
@@ -183,6 +195,9 @@ mv features/command_line/warnings_option.feature{.drop,}
 %{gem_docdir}
 
 %changelog
+* Wed Feb 17 2021 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.10.1-3
+- rr 1.2.1: Disable failing cucumber suite for now
+
 * Tue Jan 26 2021 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.10.1-2
 - Ruby 3.0: Disable failing cucumber suite for now
 
