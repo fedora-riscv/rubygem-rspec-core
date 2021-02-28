@@ -3,7 +3,7 @@
 %global	rpmminorver	.%(echo %preminorver | sed -e 's|^\\.\\.*||')
 %global	fullver	%{majorver}%{?preminorver}
 
-%global	fedorarel	3
+%global	fedorarel	4
 
 %global	gem_name	rspec-core
 
@@ -146,7 +146,7 @@ sed -i features/command_line/init.feature \
 
 # From ruby 3, once disabling
 # disabling tests failing with rr 1.2.1
-%if 0%{?fedora} >= 34
+%if 0%{?fedora} >= 34 || 0%{?rhel} >= 9
 for f in  \
 	features/command_line/warnings_option.feature \
 	features/mock_framework_integration/use_rr.feature \
@@ -165,7 +165,7 @@ env RUBYOPT="-I$(pwd)/lib -rrubygems" ruby -S cucumber -v features/ || \
 
 mv lib/rspec/core/configuration_options.rb{.warn,}
 
-%if 0%{?fedora} >= 34
+%if 0%{?fedora} >= 34 || 0%{?rhel} >= 9
 for f in  \
 	features/command_line/warnings_option.feature \
 	features/mock_framework_integration/use_rr.feature \
@@ -195,6 +195,9 @@ done
 %{gem_docdir}
 
 %changelog
+* Sun Feb 28 2021 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.10.1-4
+- Add conditional for eln
+
 * Wed Feb 17 2021 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.10.1-3
 - rr 1.2.1: Disable failing cucumber suite for now
 
