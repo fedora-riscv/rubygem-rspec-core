@@ -3,7 +3,7 @@
 %global	rpmminorver	.%(echo %preminorver | sed -e 's|^\\.\\.*||')
 %global	fullver	%{majorver}%{?preminorver}
 
-%global	fedorarel	4
+%global	fedorarel	5
 
 %global	gem_name	rspec-core
 
@@ -26,6 +26,9 @@ Source0:	http://rubygems.org/gems/%{gem_name}-%{fullver}.gem
 # %%{SOURCE2} %%{name} %%{version}
 Source1:	rubygem-%{gem_name}-%{version}-full.tar.gz
 Source2:	rspec-related-create-full-tarball.sh
+# Adjust backtrace filter for Fedora placement of StdLib.
+# https://github.com/rspec/rspec-core/pull/2881
+Patch0:		rubygem-rspec-core-3.10.1-Filter-content-of-usr-share-ruby.patch
 
 #BuildRequires:	ruby(release)
 BuildRequires:	rubygems-devel
@@ -74,7 +77,7 @@ This package contains documentation for %{name}.
 
 %prep
 %setup -q -T -n %{gem_name}-%{version} -b 1
-#%%patch1 -p1
+%patch0 -p1
 gem specification %{SOURCE0} -l --ruby > %{gem_name}.gemspec
 
 %build
@@ -91,52 +94,11 @@ rm -f %{buildroot}%{gem_instdir}/{.document,.yardopts}
 %if 0%{?need_bootstrap_set} < 1
 %check
 LANG=C.UTF-8
-# Test failure needs investigation...
-# perhaps due to some incompatibility between libxml2 2.9.x
-# and rubygem-nokogiri
+# Adjust the backtrace filters to our directory layout.
+sed -i '/backtrace_exclusion_patterns/ s/rspec-core/rspec-core-%{version}/' \
+  spec/integration/{suite_hooks_errors,spec_file_load_errors}_spec.rb
 
-FAILFILE=()
-FAILTEST=()
-FAILFILE+=("spec/rspec/core/formatters/progress_formatter_spec.rb")
-FAILTEST+=("produces the expected full output")
-FAILFILE+=("spec/rspec/core/formatters/documentation_formatter_spec.rb")
-FAILTEST+=("produces the expected full output")
-#FAILFILE+=("spec/rspec/core/formatters/syntax_highlighter_spec.rb")
-#FAILTEST+=("when CodeRay is available")
-# New from 3.5.3
-FAILFILE+=("spec/integration/suite_hooks_errors_spec.rb")
-FAILTEST+=("nicely formats errors")
-# New from 3.6.0
-FAILFILE+=("spec/integration/spec_file_load_errors_spec.rb")
-FAILTEST+=("nicely handles load-time errors")
-# NET??
-FAILFILE+=("spec/rspec/core/runner_spec.rb")
-FAILTEST+=("if drb server is started with 127.0.0.1")
-FAILFILE+=("spec/rspec/core/runner_spec.rb")
-FAILTEST+=("if drb server is started with localhost")
-# New from 3.9.0
-FAILFILE+=("spec/integration/spec_file_load_errors_spec.rb")
-FAILTEST+=("prints a single error when it happens")
-
-for ((i = 0; i < ${#FAILFILE[@]}; i++)) {
-	sed -i \
-		-e "\@${FAILTEST[$i]}@s|do$|, :broken => true do|" \
-		${FAILFILE[$i]}
-}
-
-
-# Well, when HOME variable is not set and tty is not a real one
-# but pseudo-tty, with current ruby implementation $ env -i ruby -e 'p Dir.home'
-# causes:
-# `home': couldn't find login name -- expanding `~' (ArgumentError)
-# - and this causes some test errors on rspec-core.
-# fixing this error without modifying rspec-core "code" is very hard,
-# once modifying source itself.
-sed -i.warn lib/rspec/core/configuration_options.rb \
-	-e '\@because the HOME environment variable is not set@s|RSpec\.warning|#RSpec.warning|'
-
-ruby -rrubygems -Ilib/ -S exe/rspec || \
-	ruby -rrubygems -Ilib/ -S exe/rspec --tag ~broken
+ruby -rrubygems -Ilib/ -S exe/rspec
 
 # Mark failing test as broken
 sed -i features/core_standalone.feature \
@@ -162,8 +124,6 @@ env RUBYOPT="-I$(pwd)/lib -rrubygems" ruby -S cucumber -v features/ || \
 	--tag "not @broken" \
 	--tag "not @skip-when-diff-lcs-1.3" \
 	%{nil}
-
-mv lib/rspec/core/configuration_options.rb{.warn,}
 
 %if 0%{?fedora} >= 34 || 0%{?rhel} >= 9
 for f in  \
@@ -195,6 +155,9 @@ done
 %{gem_docdir}
 
 %changelog
+* Thu Mar 18 2021 Vít Ondruch <vondruch@redhat.com> - 3.10.1-5
+- Make test suite green.
+
 * Sun Feb 28 2021 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.10.1-4
 - Add conditional for eln
 
