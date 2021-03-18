@@ -34,7 +34,6 @@ Patch0:		rubygem-rspec-core-3.10.1-Filter-content-of-usr-share-ruby.patch
 BuildRequires:	rubygems-devel
 %if 0%{?need_bootstrap_set} < 1
 BuildRequires:	rubygem(minitest)
-BuildRequires:	rubygem(nokogiri)
 BuildRequires:	rubygem(rake)
 BuildRequires:	rubygem(rspec)
 BuildRequires:	rubygem(aruba)
