@@ -100,16 +100,13 @@ sed -i '/backtrace_exclusion_patterns/ s/rspec-core/rspec-core-%{version}/' \
 ruby -rrubygems -Ilib/ -S exe/rspec
 
 # Mark failing test as broken
-sed -i features/core_standalone.feature \
-	-e 's|@unsupported-on-rbx|@unsupported-on-rbx @broken|'
 sed -i features/command_line/init.feature \
-	-e 's|^\([ \t]*\)\(Scenario: Accept and use the recommended settings\)|\1@broken\n\1\2|'
+       -e 's|^\([ \t]*\)\(Scenario: Accept and use the recommended settings\)|\1@broken\n\1\2|'
 
-# From ruby 3, once disabling
-# disabling tests failing with rr 1.2.1
 %if 0%{?fedora} >= 34 || 0%{?rhel} >= 9
 for f in  \
-	features/command_line/warnings_option.feature \
+	`# disabling tests failing with rr 1.2.1` \
+	`# https://github.com/rspec/rspec-core/issues/2882` \
 	features/mock_framework_integration/use_rr.feature \
 	%{nil}
 do
@@ -117,16 +114,20 @@ do
 done
 %endif
 
-# skip-when-diff-lcs-1.3 tests are introduced on 3.9.3
-env RUBYOPT="-I$(pwd)/lib -rrubygems" ruby -S cucumber -v features/ || \
-	env RUBYOPT="-I$(pwd)/lib -rrubygems" ruby -S cucumber -v features/ \
+# Setup just right amount of paths to make the tests suite run.
+export RUBYOPT="-I$(pwd)/lib:$(ruby -e 'puts %w[rspec/support minitest test/unit].map {|r| Gem::Specification.find_by_path(r).full_require_paths}.join(?:)')"
+cucumber -v -f pretty features/ || \
+	cucumber -v -f pretty features/ \
 	--tag "not @broken" \
+	`# Explicitly skip 'skip-when-diff-lcs-1.3' and '@ruby-2-7' test cases. While` \
+	`# the conditions are correctly detected, the 'warning' called instead their` \
+	`# execution is troublesome, possibly due to upstream using old Cucumber?` \
 	--tag "not @skip-when-diff-lcs-1.3" \
+	--tag "not @ruby-2-7" \
 	%{nil}
 
 %if 0%{?fedora} >= 34 || 0%{?rhel} >= 9
 for f in  \
-	features/command_line/warnings_option.feature \
 	features/mock_framework_integration/use_rr.feature \
 	%{nil}
 do
