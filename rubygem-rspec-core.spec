@@ -18,7 +18,7 @@
 Summary:	RSpec runner and formatters
 Name:		rubygem-%{gem_name}
 Version:	%{majorver}
-Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}
+Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}.1
 
 License:	MIT
 URL:		http://github.com/rspec/rspec-mocks
@@ -155,6 +155,9 @@ done
 %{gem_docdir}
 
 %changelog
+* Fri Jul 23 2021 Fedora Release Engineering <releng@fedoraproject.org> - 3.10.1-5.1
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
+
 * Thu Mar 18 2021 Vít Ondruch <vondruch@redhat.com> - 3.10.1-5
 - Make test suite green.
 
