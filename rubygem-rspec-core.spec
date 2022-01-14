@@ -3,7 +3,7 @@
 %global	rpmminorver	.%(echo %preminorver | sed -e 's|^\\.\\.*||')
 %global	fullver	%{majorver}%{?preminorver}
 
-%global	fedorarel	5
+%global	fedorarel	6
 
 %global	gem_name	rspec-core
 
@@ -18,7 +18,7 @@
 Summary:	RSpec runner and formatters
 Name:		rubygem-%{gem_name}
 Version:	%{majorver}
-Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}.1
+Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}
 
 License:	MIT
 URL:		http://github.com/rspec/rspec-mocks
@@ -97,7 +97,7 @@ LANG=C.UTF-8
 sed -i '/backtrace_exclusion_patterns/ s/rspec-core/rspec-core-%{version}/' \
   spec/integration/{suite_hooks_errors,spec_file_load_errors}_spec.rb
 
-ruby -rrubygems -Ilib/ -S exe/rspec
+ruby -Ilib -S exe/rspec
 
 # Mark failing test as broken
 sed -i features/command_line/init.feature \
@@ -114,8 +114,15 @@ do
 done
 %endif
 
+# cucumber 7.0.0 does not support ~@
+sed -i cucumber.yml -e "s|~@wip|'not @wip'|"
+sed -i features/support/require_expect_syntax_in_aruba_specs.rb -e 's|~@|not @|g'
+# Perhaps with cucumber 7.0.0 change? (along with diff-lcs updated to 1.5)
+sed -i features/support/diff_lcs_versions.rb -e 's|scenario.title|scenario.name|'
+
 # Setup just right amount of paths to make the tests suite run.
 export RUBYOPT="-I$(pwd)/lib:$(ruby -e 'puts %w[rspec/support minitest test/unit].map {|r| Gem::Specification.find_by_path(r).full_require_paths}.join(?:)')"
+export CUCUMBER_PUBLISH_QUIET=true
 cucumber -v -f pretty features/ || \
 	cucumber -v -f pretty features/ \
 	--tag "not @broken" \
@@ -123,6 +130,10 @@ cucumber -v -f pretty features/ || \
 	`# the conditions are correctly detected, the 'warning' called instead their` \
 	`# execution is troublesome, possibly due to upstream using old Cucumber?` \
 	--tag "not @skip-when-diff-lcs-1.3" \
+%if 0%{?fedora} >= 36
+	`# Cucumber 7 upgrades diff-lcs to 1.5` \
+	--tag "not @skip-when-diff-lcs-1.4" \
+%endif
 	--tag "not @ruby-2-7" \
 	%{nil}
 
@@ -155,6 +166,9 @@ done
 %{gem_docdir}
 
 %changelog
+* Fri Jan 14 2022 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.10.1-6
+- Add some workaround for aruba 2 / cucumber 7 / diff-lcs 1.5
+
 * Fri Jul 23 2021 Fedora Release Engineering <releng@fedoraproject.org> - 3.10.1-5.1
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
 
