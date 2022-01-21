@@ -18,7 +18,7 @@
 Summary:	RSpec runner and formatters
 Name:		rubygem-%{gem_name}
 Version:	%{majorver}
-Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}
+Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}.1
 
 License:	MIT
 URL:		http://github.com/rspec/rspec-mocks
@@ -166,6 +166,9 @@ done
 %{gem_docdir}
 
 %changelog
+* Fri Jan 21 2022 Fedora Release Engineering <releng@fedoraproject.org> - 3.10.1-6.1
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
+
 * Fri Jan 14 2022 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.10.1-6
 - Add some workaround for aruba 2 / cucumber 7 / diff-lcs 1.5
 
