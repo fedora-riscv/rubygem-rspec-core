@@ -53,9 +53,13 @@ BuildRequires:	glibc-langpack-en
 %endif
 
 %endif
-# Make the following installed by default
+# Make the following dependency optionally installed
 # lib/rspec/core/rake_task
+%if 0%{?fedora} >= 36
+Recommends:	rubygem(rake)
+%else
 Requires:	rubygem(rake)
+%endif
 # Optional
 #Requires:	rubygem(ZenTest)
 #Requires:	rubygem(flexmock)
@@ -166,6 +170,9 @@ done
 %{gem_docdir}
 
 %changelog
+* Fri Jan 28 2021 Vít Ondruch <vondruch@redhat.com>
+- Use weak dependency for Rake.
+
 * Fri Jan 21 2022 Fedora Release Engineering <releng@fedoraproject.org> - 3.10.1-6.1
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
 
