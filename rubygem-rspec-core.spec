@@ -1,9 +1,9 @@
-%global	majorver	3.10.1
+%global	majorver	3.10.2
 #%%global	preminorver	.rc6
 %global	rpmminorver	.%(echo %preminorver | sed -e 's|^\\.\\.*||')
 %global	fullver	%{majorver}%{?preminorver}
 
-%global	fedorarel	6
+%global	fedorarel	1
 
 %global	gem_name	rspec-core
 
@@ -18,7 +18,7 @@
 Summary:	RSpec runner and formatters
 Name:		rubygem-%{gem_name}
 Version:	%{majorver}
-Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}.1
+Release:	%{?preminorver:0.}%{fedorarel}%{?preminorver:%{rpmminorver}}%{?dist}
 
 License:	MIT
 URL:		http://github.com/rspec/rspec-mocks
@@ -170,6 +170,9 @@ done
 %{gem_docdir}
 
 %changelog
+* Fri Jan 28 2021 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.10.2-1
+- 3.10.2
+
 * Fri Jan 28 2021 Vít Ondruch <vondruch@redhat.com>
 - Use weak dependency for Rake.
 
