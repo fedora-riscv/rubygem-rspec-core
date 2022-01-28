@@ -170,10 +170,10 @@ done
 %{gem_docdir}
 
 %changelog
-* Fri Jan 28 2021 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.10.2-1
+* Fri Jan 28 2022 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.10.2-1
 - 3.10.2
 
-* Fri Jan 28 2021 Vít Ondruch <vondruch@redhat.com>
+* Fri Jan 28 2022 Vít Ondruch <vondruch@redhat.com>
 - Use weak dependency for Rake.
 
 * Fri Jan 21 2022 Fedora Release Engineering <releng@fedoraproject.org> - 3.10.1-6.1
