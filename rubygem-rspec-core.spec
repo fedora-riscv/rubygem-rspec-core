@@ -1,9 +1,9 @@
-%global	majorver	3.10.2
+%global	majorver	3.11.0
 #%%global	preminorver	.rc6
 %global	rpmminorver	.%(echo %preminorver | sed -e 's|^\\.\\.*||')
 %global	fullver	%{majorver}%{?preminorver}
 
-%global	fedorarel	2
+%global	fedorarel	1
 
 %global	gem_name	rspec-core
 
@@ -11,7 +11,7 @@
 # runtime part of rspec-mocks does not depend on rspec-core
 # Disable test for now due to cucumber v.s. gherkin dependency issue
 # pulled by aruba
-%global	need_bootstrap_set	0
+%bcond_without bootstrap
 
 %undefine __brp_mangle_shebangs
 
@@ -32,7 +32,7 @@ Patch0:		rubygem-rspec-core-3.10.1-Filter-content-of-usr-share-ruby.patch
 
 #BuildRequires:	ruby(release)
 BuildRequires:	rubygems-devel
-%if 0%{?need_bootstrap_set} < 1
+%if %{without bootstrap}
 BuildRequires:	rubygem(minitest)
 BuildRequires:	rubygem(rake)
 BuildRequires:	rubygem(rspec)
@@ -94,8 +94,8 @@ cp -a .%{_prefix}/* %{buildroot}%{_prefix}/
 # cleanups
 rm -f %{buildroot}%{gem_instdir}/{.document,.yardopts}
 
-%if 0%{?need_bootstrap_set} < 1
 %check
+%if %{without bootstrap}
 LANG=C.UTF-8
 # Adjust the backtrace filters to our directory layout.
 sed -i '/backtrace_exclusion_patterns/ s/rspec-core/rspec-core-%{version}/' \
@@ -174,6 +174,9 @@ done
 %{gem_docdir}
 
 %changelog
+* Thu Feb 10 2022 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.11.0-1
+- 3.11.0
+
 * Fri Jan 28 2022 Mamoru TASAKA <mtasaka@fedoraproject.org> - 3.10.2-2
 - Disable test failing on ruby31 for now
 
