@@ -102,7 +102,11 @@ cp -a .%{_prefix}/* %{buildroot}%{_prefix}/
 rm -f %{buildroot}%{gem_instdir}/{.document,.yardopts}
 
 %check
-%if %{without bootstrap}
+%if %{with bootstrap}
+# Not do actual check, exiting.
+exit 0
+%endif
+
 LANG=C.UTF-8
 
 %if %{without aruba}
@@ -129,7 +133,10 @@ sed -i spec/rspec/core/example_spec.rb \
 # FIXME seed 33413 sees test failure
 ruby -Ilib -S exe/rspec --seed 1 #33413
 
-%if %{with aruba}
+%if %{without aruba}
+# The following lines are for cucumber tests, so exiting.
+exit 0
+%endif
 
 # Mark failing test as broken
 sed -i features/command_line/init.feature \
@@ -176,10 +183,6 @@ for f in  \
 do
 	mv ${f}.drop ${f}
 done
-%endif
-
-%endif
-
 %endif
 
 %files
