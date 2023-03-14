@@ -26,6 +26,7 @@ Name:		rubygem-%{gem_name}
 Version:	%{majorver}
 Release:	%{?preminorver:0.}%{baserelease}%{?preminorver:%{rpmminorver}}%{?dist}
 
+# SPDX confirmed
 License:	MIT
 URL:		http://github.com/rspec/rspec-mocks
 Source0:	http://rubygems.org/gems/%{gem_name}-%{fullver}.gem
